@@ -1,9 +1,60 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
 <html>
-<head>
-	<title></title>
-</head>
-<body>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>Park City Tourism Map</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 
-</body>
+    <!-- Custom styles for this template -->
+    <link href="css/bootstrap-3.3.5/docs/examples/jumbotron/jumbotron.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- begin template -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Park City Ski Vacation Planner</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input type="text" placeholder="Business Type" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Keyword" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Search</button>
+                </form>
+            </div>
+            <!--/.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div id="map"></div>
+
+    <div class="container-fluid" id="main">
+        <div class="row">
+            <div class="col-xs-4" id="left">
+                <h3 id="list-header">Relevant Yelp Links</h3>
+                <ul id="list-links">Type in keywords to find relevant business reviews on Yelp !</ul>
+            </div>
+            <div class="col-xs-8"></div>
+        </div>
+    </div>
+    <!-- end template -->
+
+    <script async="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&amp;callback=initMap"></script>
+    <script src="js/GoogleMap.js"></script>
+
+  </body>
 </html>
