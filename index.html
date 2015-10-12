@@ -6,39 +6,45 @@
     <meta charset="utf-8">
     <title>Park City Tourism Map</title>
     <!-- Bootstrap core CSS -->
+    <link rel="icon" href="css/bootstrap-3.3.5/favicon.ico">
     <link href="css/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="css/bootstrap-3.3.5/docs/examples/jumbotron/jumbotron.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/Style.css" rel="stylesheet">
   </head>
   <body>
 
     <!-- begin template -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Park City Ski Vacation Planner</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <form class="navbar-form navbar-right">
-                    <div class="form-group">
-                        <input type="text" placeholder="Business Type" class="form-control">
-                    </div>
-                    <div class="form-group">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Park City Ski Vacation Planner</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <form class="navbar-form">
+                <div class="form-group" style="display:inline;">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><span class="glyphicon glyphicon-bed"></span></a></li>
+                                <li><a href="#"><span class="glyphicon glyphicon-cutlery"></span></a></li>
+                                <li><a href="#"><span class="glyphicon glyphicon-camera"></span></a></li>
+                                <li><a href="#"><span class="glyphicon glyphicon-road"></span></a></li>
+                                <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span></a><li>
+                            </ul>
+                        </div>
                         <input type="text" placeholder="Keyword" class="form-control">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
                     </div>
-                    <button type="submit" class="btn btn-success">Search</button>
-                </form>
-            </div>
-            <!--/.navbar-collapse -->
+                </div>
+            </form>
         </div>
     </nav>
+
 
     <div id="map"></div>
 
@@ -52,7 +58,8 @@
         </div>
     </div>
     <!-- end template -->
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="css/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
     <script async="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&amp;callback=initMap"></script>
     <script src="js/GoogleMap.js"></script>
 

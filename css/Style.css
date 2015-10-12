@@ -15,6 +15,8 @@ html,body{
 
 body{
     padding-top:50px; /*padding for navbar*/
+    padding-bottom: 20px;
+}
 }
 
 .navbar-custom .icon-bar {
@@ -54,11 +56,16 @@ body{
 }
 
 #map {
-    width:33.3333%;
+    width:66.6666%;
     height:calc(100% - 0);
     position:absolute;
-    right:16px;
+    right:0px;
     top:50px;
     bottom:0;
     overflow:hidden;
+}
+
+.dropdown {
+    right: 20px
+    position: relative;
 }
