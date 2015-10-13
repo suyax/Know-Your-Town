@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>Park City Tourism Map</title>
     <!-- Bootstrap core CSS -->
-    <link rel="icon" href="css/bootstrap-3.3.5/favicon.ico">
+    <link rel="icon" href="css/bootstrap-3.3.5/docs/favicon.ico">
     <link href="css/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/Style.css" rel="stylesheet">
   </head>
@@ -30,14 +30,14 @@
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>
                             <ul class="dropdown-menu">
-                                <li><a href="#"><span class="glyphicon glyphicon-bed"></span></a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-cutlery"></span></a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-camera"></span></a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-road"></span></a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span></a><li>
+                                <li><a id="hotels"><span class="glyphicon glyphicon-bed"></span></a></li>
+                                <li><a id="restaurants"><span class="glyphicon glyphicon-cutlery"></span></a></li>
+                                <li><a id="active"><span class="glyphicon glyphicon-camera"></span></a></li>
+                                <li><a id="buses"><span class="glyphicon glyphicon-road"></span></a></li>
+                                <li><a id="shopping"><span class="glyphicon glyphicon-shopping-cart"></span></a><li>
                             </ul>
                         </div>
-                        <input type="text" placeholder="Keyword" class="form-control">
+                        <input id="keyword" type="text" placeholder="Keyword" class="form-control">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
         <div class="row">
             <div class="col-xs-4" id="left">
                 <h3 id="list-header">Relevant Yelp Links</h3>
-                <ul id="list-links">Type in keywords to find relevant business reviews on Yelp !</ul>
+                <ul id="yelpElem">Type in keywords to find relevant business reviews on Yelp !</ul>
             </div>
             <div class="col-xs-8"></div>
         </div>
@@ -62,6 +62,8 @@
     <script src="css/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
     <script async="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&amp;callback=initMap"></script>
     <script src="js/GoogleMap.js"></script>
+    <script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <script src="js/test.js"></script>
 
   </body>
 </html>
