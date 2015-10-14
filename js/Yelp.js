@@ -5,8 +5,10 @@ var yelpRequestTimeout = setTimeout(function(){
 }, 8000);
 var $keyword = $('#keyword').val();
 var $selectCategory =$('#selectCategory').val();
+var locations = [];
 $keyword = 'resturant';
 $selectCategory = 'food';
+
 
 var nonce = Math.floor(Math.random() * 1e12).toString();
 var parameters = {
@@ -37,18 +39,24 @@ $.ajax({
 
     //jsonp: "callback",
     success: function( response ) {
-      console.log(response);
       $.each(response.businesses, function(business){
         var bizname = response.businesses[business].name;
         var bizurl =  response.businesses[business].url;
         var bizrate = response.businesses[business].rating_img_url;
         var bizimg = response.businesses[business].image_url;
         var bizreview = response.businesses[business].review_count;
-        var yelp = '<a href="' + bizurl + '">' + bizname +'    </a><img src="' + bizrate + '"</img><span>    ' + bizreview + '</span><br><img src="' + bizimg + '"</img>' ;
+        var bizlat = response.businesses[business].location.coordinate.latitude;
+        var bizlng = response.businesses[business].location.coordinate.longitude;
+        var bizll =  {lat: bizlat, lng: bizlng};
+        locations.push(bizll);
+        var yelp = '<a href="' + bizurl + '">' + bizname + '    </a><img src="' + bizrate + '"</img><span>    ' + bizreview + '</span><br><img src="' + bizimg + '"</img>' ;
         $("<li/>",{
           html: yelp
         }).appendTo($yelpElem);
-      })
+      });
       clearTimeout(yelpRequestTimeout);
     }
 });
+
+update(locations);
+

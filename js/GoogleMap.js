@@ -1,27 +1,27 @@
 	// initial map view when loading
 	function initMap() {
-		var myHotel = {lat: 40.665911, lng: -111.513906};
+		var center = {lat: 40.665911, lng: -111.513906};
 		var  map = new google.maps.Map(document.getElementById('map'), {
-			center: myHotel,
+			center: center,
 			zoom: 14
 		});
-		var hotelImg = 'images/Hotel.svg';
+		/*var defaultImg = 'images/Hotel.svg';
 		var marker = new google.maps.Marker({
-			position: myHotel,
+			position: center,
 			map: map,
-			icon: hotelImg,
+			icon: defaultImg,
 			animation: google.maps.Animation.DROP,
-			title: 'Hotel Stay - Jupiter Inn #8'
+			title: 'Hotel Stay - Jupiter Inn #8'*/
 		});
 
 		map.addListener('center_changed', function(){
 			// 5 seconds after the center of the map has changed go back to initial center
 			window.setTimeout(function(){
-				map.panTo(marker.getPosition());
-			},5000);
+				map.panTo(center.getPosition());
+			},8000);
 		});
 
-		marker.addListener('click', toggleBounce);
+		/*marker.addListener('click', toggleBounce);
 
 		function toggleBounce() {
 			if (marker.getAnimation() !== null) {
@@ -32,14 +32,15 @@
 			}
 		}
 
-		/*function drop() {
+	function update(locations) {
 		  clearMarkers();
-		  for (var i = 0; i < neighborhoods.length; i++) {
-		    addMarkerWithTimeout(neighborhoods[i], i * 200);
+		  var markers=[];
+		  for (var i = 0; i < locations.length; i++) {
+		    addMarkerWithTimeout(locations[i], i * 200);
 		  }
 		};
 
-		function addMarkerWithTimeout(position, timeout) {
+		function addMarkerWithTimeout(location, timeout) {
 		  window.setTimeout(function() {
 		    markers.push(new google.maps.Marker({
 		      position: position,
