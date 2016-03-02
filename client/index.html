@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>Park City Tourism Map</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="icon" href="css/bootstrap-3.3.5/docs/favicon.ico">
+    <link href="css/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/Style.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- begin template -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Park City Ski Vacation Planner</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <form class="navbar-form">
+                <div class="form-group" style="display:inline;">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <select id="select"class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                           </select>
+                        </div>
+                        <input id="keyword" data-bind="value: keyword" class="form-control"/>
+                        <span  id="search" data-bind="click:formSubmit"class="input-group-addon" ><span class="glyphicon glyphicon-search"></span> </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+
+    <div id="map"></div>
+
+    <div class="container-fluid" id="main">
+        <div class="row">
+            <div class="col-xs-4" id="left">
+                <h3 id="list-header">Relevant Yelp Links</h3>
+                <ul id="yelpElem">Type in keywords to find relevant business reviews on Yelp !</ul>
+            </div>
+            <div class="col-xs-8"></div>
+        </div>
+    </div>
+    <!-- end template -->
+    <script src="bower_components/knockout/dist/knockout.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="css/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
+    <script async="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&amp;callback=initMap"></script>
+    <script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <script src="js/Main.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        var center = new google.maps.LatLng(37.4419, -122.1419);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+           var marker, i;
+
+           for (i = 0; i < locations.length; i++) {
+             marker = new google.maps.Marker({
+               position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+               map: map
+             });
+
+             google.maps.event.addListener(marker, 'click', (function(marker, i) {
+               return function() {
+                 infowindow.setContent(locations[i][0]);
+                 infowindow.open(map, marker);
+               }
+             })(marker, i));
+           }
+         }
+    </script>
+  </body>
+</html>

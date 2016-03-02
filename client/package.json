@@ -1,0 +1,35 @@
+{
+  "name": "know-you-neighborhood",
+  "version": "1.0.0",
+  "description": "a travel planner for exploring new neighborhood",
+  "main": "app.js",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "^2.1.0",
+    "knockout": "^3.4.0",
+    "nonce": "^1.0.3",
+    "oauth-signature": "^1.3.0",
+    "request": "^2.65.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suyax/Project-5.git"
+  },
+  "keywords": [
+    "travel",
+    "planning"
+  ],
+  "author": "Suya Xu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suyax/Project-5/issues"
+  },
+  "homepage": "https://github.com/suyax/Project-5#readme"
+}
