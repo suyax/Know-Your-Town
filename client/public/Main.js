@@ -219,7 +219,10 @@ function init() {
     // 5 seconds after the center of the map has changed go back to initial center
     map.addListener('center_changed', function() {
         window.setTimeout(function() {
-            map.setCenter(currentAddress);
+            map.setCenter({
+                lat: currentAddress.lat,
+                lng: currentAddress.lng
+            });
             map.setZoom(12);
         }, 20000);
     });
