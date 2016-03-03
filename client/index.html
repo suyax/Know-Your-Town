@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <title>Park City Tourism Map</title>
     <!-- Bootstrap core CSS -->
-    <link rel="icon" href="css/bootstrap-3.3.5/docs/favicon.ico">
-    <link href="css/bootstrap-3.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/Style.css" rel="stylesheet">
+    <link rel="icon" href="public/assets/images/index.ico">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="public/assets/stylesheets/style.css" rel="stylesheet">
   </head>
   <body>
 
@@ -38,10 +38,8 @@
             </form>
         </div>
     </nav>
-
-
+    <input id="pac-input" class="controls" type="text" placeholder="Where are you going?">
     <div id="map"></div>
-
     <div class="container-fluid" id="main">
         <div class="row">
             <div class="col-xs-4" id="left">
@@ -52,40 +50,11 @@
         </div>
     </div>
     <!-- end template -->
-    <script src="bower_components/knockout/dist/knockout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="css/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
-    <script async="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&amp;callback=initMap"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>
     <script src="js/Main.js"></script>
-    <script type="text/javascript">
-      function initialize() {
-        var center = new google.maps.LatLng(37.4419, -122.1419);
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
-          center: center,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-
-        var infowindow = new google.maps.InfoWindow();
-
-           var marker, i;
-
-           for (i = 0; i < locations.length; i++) {
-             marker = new google.maps.Marker({
-               position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-               map: map
-             });
-
-             google.maps.event.addListener(marker, 'click', (function(marker, i) {
-               return function() {
-                 infowindow.setContent(locations[i][0]);
-                 infowindow.open(map, marker);
-               }
-             })(marker, i));
-           }
-         }
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places" async defer></script>
   </body>
 </html>
