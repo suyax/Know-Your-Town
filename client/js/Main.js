@@ -46,7 +46,6 @@ function dataValidater(data,item){
 
 var encodedSignature = oauthSignature.generate('GET', defaultData.yelp_url, parameters,
     "YOoYY4UHe1D3tEixMbExUtBqptI", "0H8fIAhkGp_z9M09IIfQxmvZoIk");
-console.log(parameters);
 
 parameters.oauth_signature = encodedSignature;
 
@@ -88,7 +87,7 @@ $.ajax({
     }
 });
 //controller-initial
-function addMarker(item,map) {
+function addMarker(item, map) {
   var marker = new google.maps.Marker({
       position: item.ll,
       map: map,
@@ -154,7 +153,7 @@ function init() {
   });
 
   //Create the search box and link it to the UI element
-  var input = $('pac-input')[0];
+  var input = $('#pac-input')[0];
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
