@@ -91,36 +91,39 @@ $.ajax({
     }
 });
 //controller-initial
-function addMarker(item, map) {
-    var marker = new google.maps.Marker({
-        position: item.ll,
-        map: map,
-        animation: google.maps.Animation.DROP,
-        title: item.name,
-    });
-    markers.push(marker);
+function addMarker(item, index, map) {
+    window.setTimeout(function() {
+        var marker = new google.maps.Marker({
+            position: item.ll,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            title: item.name,
+        });
+        markers.push(marker)
 
-    marker.info = new google.maps.InfoWindow({
-        content: '<IMG BORDER="0" ALIGN="Left" SRC="' + item.img + '">'
-    });
+        marker.info = new google.maps.InfoWindow({
+            content: '<><IMG BORDER="0" ALIGN="Left" SRC="' + item.img + '">'
+        });
 
-    google.maps.event.addListener(marker, 'click', (function(marker) {
-        return function toggleBounce() {
-            console.log(marker);
-            if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-            } else {
-                map.setZoom(18);
-                map.setCenter(marker.getPosition());
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-                marker.info.open(map, marker);
-            }
-        };
-    })(marker));
+        google.maps.event.addListener(marker, 'click', (function(marker) {
+            return function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    map.setZoom(15);
+                    map.setCenter(marker.getPosition());
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                    marker.info.open(map, marker);
+                }
+            };
+        })(marker));
+    }, index * 50);
 }
 // Deletes all markers in the array by removing references to them.
 function deleteMarkers() {
-    clearMarkers();
+    markers.forEach(function(marker) {
+        marker.setMap(null);
+    });
     markers = [];
 }
 //controller- update
@@ -151,28 +154,63 @@ function init() {
     }];
     var map = new google.maps.Map($('#map')[0], {
         center: defaultData.center,
-        zoom: 13,
+        zoom: 10,
         styles: styleArray
     });
 
     //Create the search box and link it to the UI element
     var input = $('#pac-input')[0];
-    var searchBox = new google.maps.places.SearchBox(input);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var autoComplete = new google.maps.places.Autocomplete(input);
+    autoComplete.bindTo('bounds', map);
 
-    initMarkers(map); //call iniMarkers to make markers on map
-    map.addListener('center_changed', function() {
-        // 5 seconds after the center of the map has changed go back to initial center
-        window.setTimeout(function() {
-            map.panTo(defaultData.center);
-            map.setZoom(12);
-        }, 8000);
-    }); //if make center changed go back to original center
+    var center = new google.maps.Marker({
+        map: map,
+        anchorPoint: new google.maps.Point(0, -29)
+    });
+
+    autoComplete.addListener('place_changed', function() {
+        center.setVisible(false);
+        var place = autoComplete.getPlace();
+        if (!place.geometry) {
+            window.alert("find not find this place");
+            return;
+        };
+        // If the place has a geometry, the present it on map;
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+        }
+        center.setIcon(({
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(35, 35)
+        }));
+        center.setPosition(place.geometry.location);
+        center.setVisible(true);
+
+        var address = '';
+        if (place.address_components) {
+            address = [
+                (place.address_components[0] && place.address_components[0].short_name || ''),
+                (place.address_components[1] && place.address_components[1].short_name || ''),
+                (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+        }
+
+        //clear out the old markers.
+        deleteMarkers();
+        //addMarker to map view
+        initMarkers(map); //call iniMarkers to make markers on map
+    });
 }
-//addMarker to map view
+
 function initMarkers(map) {
-    items.forEach(function(item) {
-        addMarker(item,  map);
+    _.each(items, function(item, index) {
+        addMarker(item,  index, map);
     });
 }
 
