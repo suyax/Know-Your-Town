@@ -94,7 +94,7 @@ fetchData().done(function(response, status, body) {
     }
 }).fail(function() {
     $yelpElem.text("Failed To Get Yelp Resources :(");
-})
+});
 
 //controller-initial
 function addMarker(item, index, map) {
@@ -167,7 +167,6 @@ function init() {
 
     //Create the search box and link it to the UI element
     var input = $('#pac-input')[0];
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     var autoComplete = new google.maps.places.Autocomplete(input);
     autoComplete.bindTo('bounds', map);
 
