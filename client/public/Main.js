@@ -19,6 +19,11 @@ var currentAddress = {};
 var $keyword = $('#keyword');
 var $yelpElem = $('#yelpElem');
 var $selectCategory = $('#selectCategory');
+var googleMapErrorHandling = function() {
+    if (typeof google || typeof google.map) {
+        $('#map').text("Failed To Get Google Map Resources :(");
+    }
+}();
 var nonce = Math.floor(Math.random() * 1e12).toString();
 var parameters = {
     oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
@@ -69,25 +74,27 @@ function fetchData() {
     });
 }
 
-fetchData().done(function(response) {
-    $.each(response.businesses, function(business) {
-        var bizname = response.businesses[business].name;
-        var bizurl = response.businesses[business].url;
-        var bizrate = response.businesses[business].rating_img_url;
-        var bizimg = response.businesses[business].image_url;
-        var bizreview = response.businesses[business].review_count;
-        var bizlat = response.businesses[business].location.coordinate.latitude;
-        var bizlng = response.businesses[business].location.coordinate.longitude;
-        var bizll = {
-            lat: bizlat,
-            lng: bizlng
-        };
-        items.push(new Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll));
-    });
-    initList(items);
+fetchData().done(function(response, status, body) {
+    if (body.status === 200) {
+        _.each(response.businesses, function(business) {
+            var bizname = business.name;
+            var bizurl = business.url;
+            var bizrate = business.rating_img_url;
+            var bizimg = business.image_url;
+            var bizreview = business.review_count;
+            var bizlat = business.location.coordinate.latitude;
+            var bizlng = business.location.coordinate.longitude;
+            var bizll = {
+                lat: bizlat,
+                lng: bizlng
+            };
+            items.push(new Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll));
+        });
+        initList(items);
+    }
 }).fail(function() {
-
-});
+    $yelpElem.text("Failed To Get Yelp Resources :(");
+})
 
 //controller-initial
 function addMarker(item, index, map) {
@@ -103,14 +110,6 @@ function addMarker(item, index, map) {
 
         marker.info = new google.maps.InfoWindow({
             content: '<><IMG BORDER="0" ALIGN="Left" SRC="' + item.img + '">'
-        });
-
-        // 5 seconds after the center of the map has changed go back to initial center
-        map.addListener('center_changed', function() {
-            window.setTimeout(function() {
-                map.setCenter(currentAddress);
-                map.setZoom(12);
-            }, 5000);
         });
 
         google.maps.event.addListener(marker, 'click', (function(marker) {
@@ -217,6 +216,13 @@ function init() {
         deleteMarkers();
         //addMarker to map view
         initMarkers(map); //call iniMarkers to make markers on map
+    });
+    // 5 seconds after the center of the map has changed go back to initial center
+    map.addListener('center_changed', function() {
+        window.setTimeout(function() {
+            map.setCenter(currentAddress);
+            map.setZoom(12);
+        }, 20000);
     });
 }
 

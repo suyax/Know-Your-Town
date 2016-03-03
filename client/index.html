@@ -7,7 +7,7 @@
     <title>Park City Tourism Map</title>
     <!-- Bootstrap core CSS -->
     <link rel="icon" href="public/assets/images/index.ico">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="public/assets/stylesheets/style.css" rel="stylesheet">
   </head>
   <body>
@@ -50,12 +50,13 @@
         </div>
     </div>
     <!-- end template -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/underscore/underscore-min.js"></script>
+    <script src="/node_modules/knockout/build/output/knockout-latest.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/oauth-signature/dist/oauth-signature.js"></script>
     <script src="js/Main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places&callback=init" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places&callback=init" ></script>
   </body>
 </html>
