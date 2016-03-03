@@ -12,14 +12,12 @@ var defaultData = {
 //Global variables---model
 var items = [];
 var markers = [];
+var currentAddress = {};
 //Model-initial Model
 //Model-initial Model yelp
 var $keyword = $('#keyword');
 var $yelpElem = $('#yelpElem');
 var $selectCategory = $('#selectCategory');
-var yelpRequestTimeout = setTimeout(function(){
-    $yelpElem.text("Failed To Get Yelp Resources");
-}, 8000);
 var nonce = Math.floor(Math.random() * 1e12).toString();
 var parameters = {
   oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
@@ -29,9 +27,8 @@ var parameters = {
   oauth_signature_method: 'HMAC-SHA1',
   oauth_version: '1.0',
   callback: 'cb',
-  location: defaultData.center.location,
-  cll: defaultData.center.lat + ',' + defaultData.center.lng,
-  term: dataValidater($keyword.val(),"term"),
+  location: currentAddress.location || defaultData.center.location,
+  cll: currentAddress.lat + ','+ currentAddress.lng || defaultData.center.lat + ',' + defaultData.center.lng,
   limit: 10,
   category_filter: dataValidater($selectCategory.val(),"category")
 };
@@ -62,30 +59,32 @@ function Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll){
   this.ll = bizll;
 }
 //get data from yelp and pass to view
-$.ajax({
+function fetchData(){
+  return $.ajax({
     url: defaultData.yelp_url,
     data: parameters,
     cache: true,
     dataType: "jsonp",
+    });
+  }
 
-    //jsonp: "callback",
-    success: function( response ) {
-      $.each(response.businesses, function(business){
-        var bizname = response.businesses[business].name;
-        var bizurl =  response.businesses[business].url;
-        var bizrate = response.businesses[business].rating_img_url;
-        var bizimg = response.businesses[business].image_url;
-        var bizreview = response.businesses[business].review_count;
-        var bizlat = response.businesses[business].location.coordinate.latitude;
-        var bizlng = response.businesses[business].location.coordinate.longitude;
-        var bizll =  {lat: bizlat, lng: bizlng};
-        items.push( new Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll));
-      });
-      clearTimeout(yelpRequestTimeout);
-      init();
-      initList(items);
-    }
+fetchData().done(function(response) {
+  $.each(response.businesses, function(business){
+    var bizname = response.businesses[business].name;
+    var bizurl =  response.businesses[business].url;
+    var bizrate = response.businesses[business].rating_img_url;
+    var bizimg = response.businesses[business].image_url;
+    var bizreview = response.businesses[business].review_count;
+    var bizlat = response.businesses[business].location.coordinate.latitude;
+    var bizlng = response.businesses[business].location.coordinate.longitude;
+    var bizll =  {lat: bizlat, lng: bizlng};
+    items.push( new Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll));
+  });
+  initList(items);
+}).fail(function(){
+
 });
+
 //controller-initial
 function addMarker(item, index, map) {
   window.setTimeout(function() {
@@ -95,10 +94,19 @@ function addMarker(item, index, map) {
       animation: google.maps.Animation.DROP,
       title: item.name,
     });
-    markers.push(marker)
+
+    markers.push(marker);
 
   marker.info = new google.maps.InfoWindow({
     content: '<><IMG BORDER="0" ALIGN="Left" SRC="' + item.img +'">'
+  });
+
+  // 5 seconds after the center of the map has changed go back to initial center
+  map.addListener('center_changed', function(){
+    window.setTimeout( function() {
+      map.setCenter(currentAddress);
+      map.setZoom(12);
+    }, 5000);
   });
 
   google.maps.event.addListener(marker,'click', (function(marker){
@@ -165,14 +173,13 @@ function init() {
     map: map,
     anchorPoint: new google.maps.Point(0, -29)
   });
-
   autoComplete.addListener('place_changed', function() {
     center.setVisible(false);
     var place = autoComplete.getPlace();
     if (!place.geometry) {
       window.alert("find not find this place");
       return;
-    };
+    }
   // If the place has a geometry, the present it on map;
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
@@ -189,7 +196,7 @@ function init() {
     center.setPosition(place.geometry.location);
     center.setVisible(true);
 
-    var address = '';
+    var address = defaultData.location;
     if (place.address_components) {
       address = [
         (place.address_components[0] && place.address_components[0].short_name || ''),
@@ -198,6 +205,11 @@ function init() {
       ].join(' ');
     }
 
+    currentAddress.lat = map.getCenter().lat();
+    currentAddress.lng = map.getCenter().lng();
+    currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
+
+    console.log(currentAddress.location);
   //clear out the old markers.
     deleteMarkers();
 //addMarker to map view
