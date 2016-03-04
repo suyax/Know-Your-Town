@@ -5,7 +5,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
-var beautify = require('gulp-beautify');
+var beautify = require('gulp-jsbeautify');
 var sass = require('gulp-sass');
 
 //define default task

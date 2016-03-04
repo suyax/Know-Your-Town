@@ -25,27 +25,28 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form">
+            <button id="trig" class="btn btn-inverse"><span class="glyphicon glyphicon-search"></span>  On Yelp </button>
                 <div class="form-group" style="display:inline;">
                     <div class="input-group">
                         <div class="input-group-btn">
+                        <input id="pac-input" class="controls form-control" type="text" placeholder="Where are you going?">
                             <select id="select"class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                            </select>
                         </div>
-                        <input id="pac-input" class="controls" type="text" placeholder="Where are you going?">
-                        <span  id="search" data-bind="click:formSubmit"class="input-group-addon" ><span class="glyphicon glyphicon-search"></span> </span>
                     </div>
                 </div>
             </form>
         </div>
     </nav>
-    <div id="map"></div>
     <div class="container-fluid" id="main">
         <div class="row">
-            <div class="col-xs-4" id="left">
-                <h3 id="list-header">Relevant Yelp Links</h3>
-                <ul id="yelpElem">Type in keywords to find relevant business reviews on Yelp !</ul>
+            <div id="map" class="col-xs-12">
             </div>
-            <div class="col-xs-8"></div>
+            <div class="col-xs-0" id="left">
+                <ul id="yelpElem">
+                    <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo">
+                </ul>
+            </div>
         </div>
     </div>
     <!-- end template -->
@@ -55,6 +56,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <script src="js/style.js"></script>
     <script src="js/Main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places&callback=init" ></script>
   </body>

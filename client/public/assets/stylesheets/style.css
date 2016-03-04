@@ -1,5 +1,6 @@
 html body {
-  height: 100%; }
+  height: 100%;
+  width: 100%; }
 
 body {
   padding-top: 50px;
@@ -39,14 +40,17 @@ body {
   font-size: 15px;
   font-weight: 300;
   padding: 0 11px 0 13px;
-  text-overflow: ellipsis;
-  width: 300px; }
+  text-overflow: ellipsis; }
 
 #pac-input:focus {
   border-color: #4d90fe; }
 
 .pac-container {
-  font-family: Roboto; }
+  font-family: Roboto;
+  margin-top: 10px; }
+  @media (max-width: 767px) {
+    .pac-container {
+      margin-top: 25px; } }
 
 #type-selector {
   color: #fff;
@@ -61,18 +65,43 @@ body {
 #target {
   width: 345px; }
 
+#main {
+  height: 100%;
+  width: 100%; }
+
 #main, #main > .row {
   height: 100%; }
 
 #main > .row {
   overflow-y: scroll; }
 
+.row > div {
+  max-height: 100vh;
+  overflow-style: scrollbar;
+  -webkit-transition: width 0.3s ease, margin 0.3s ease;
+  -moz-transition: width 0.3s ease, margin 0.3s ease;
+  -o-transition: width 0.3s ease, margin 0.3s ease;
+  transition: width 0.3s ease, margin 0.3s ease; }
+
+ul {
+  margin: 5px;
+  padding-left: 20px;
+  background-color: rgba(255, 255, 255, 0.8); }
+
+#logo {
+  width: 100px; }
+
+ul > li {
+  margin: 5px; }
+
 #left {
-  height: 100%; }
+  height: 100%;
+  -webkit-box-shadow: inset 6 0 12;
+  box-shadow: inset 6 0 12; }
 
 #map {
-  width: 66.6666%;
-  height: calc(100% - 0);
+  width: 100%;
+  height: 100%;
   position: absolute;
   right: 0px;
   top: 50px;

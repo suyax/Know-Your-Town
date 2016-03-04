@@ -13,7 +13,11 @@ var defaultData = {
 //Global variables---model
 var items = [];
 var markers = [];
-var currentAddress = {};
+var currentAddress = {
+    lat: defaultData.center.lat,
+    lng: defaultData.center.lng,
+    location: defaultData.center.location
+};
 //Model-initial Model
 //Model-initial Model yelp
 var $keyword = $('#keyword');
@@ -33,8 +37,8 @@ var parameters = {
     oauth_signature_method: 'HMAC-SHA1',
     oauth_version: '1.0',
     callback: 'cb',
-    location: currentAddress.location || defaultData.center.location,
-    cll: currentAddress.lat + ',' + currentAddress.lng || defaultData.center.lat + ',' + defaultData.center.lng,
+    location: currentAddress.location,
+    cll: currentAddress.lat + ',' + currentAddress.lng,
     limit: 10,
     category_filter: dataValidater($selectCategory.val(), "category")
 };
@@ -142,7 +146,7 @@ function init() {
     var styleArray = [{
         featureType: "all",
         stylers: [{
-            saturation: -80
+            saturation: -60
         }]
     }, {
         featureType: "road.arterial",
@@ -150,7 +154,7 @@ function init() {
         stylers: [{
             hue: "#00ffee"
         }, {
-            saturation: 50
+            saturation: 10
         }]
     }, {
         featureType: "poi.business",
@@ -210,7 +214,7 @@ function init() {
         currentAddress.lng = map.getCenter().lng();
         currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
 
-        console.log(currentAddress.location);
+
         //clear out the old markers.
         deleteMarkers();
         //addMarker to map view
@@ -225,6 +229,13 @@ function init() {
             });
             map.setZoom(12);
         }, 20000);
+    });
+
+    google.maps.event.addDomListener(window, 'load', init);
+    google.maps.event.addDomListener(window, "resize", function() {
+        var center = map.getCenter();
+        google.maps.event.trigger(map, "resize");
+        map.setCenter(center);
     });
 }
 
