@@ -108,11 +108,6 @@ ul > li {
   bottom: 0;
   overflow: hidden; }
 
-#select {
-  height: 100%;
-  border-width: 0;
-  border-radius: 2px 0 0 2px; }
-
 .dropdown {
   right: 20px;
   position: relative; }

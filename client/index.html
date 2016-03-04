@@ -25,10 +25,12 @@
             <button id="trig" class="btn btn-inverse"><span class="glyphicon glyphicon-search"></span>  On Yelp </button>
                 <div class="form-group">
                     <div class="input-group">
-                        <div class="input-group-btn">
-                        <input id="pac-input" class="controls form-control" type="text" placeholder="Where are you going?">
-                            <select id="select"class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                           </select>
+                        <div class=" from-control input-group-btn">
+                        <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?">
+                        <select id="select" class="form-control" data-bind="options: availableCategories,
+                        optionsCaption: 'Narrow it Down by ...',
+                        optionsText:'name',
+                        value: category"></select>
                         </div>
                     </div>
                 </div>
@@ -41,6 +43,11 @@
             <div class="col-xs-0" id="left">
                 <ul id="yelpElem">
                     <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo">
+                    <!-- /ko foreach:items -->
+                    <li>
+                        <a data-bind="text: name, attr:{'href':url"></a>
+                    </li>
+                    <!-- /ko  -->
                 </ul>
             </div>
         </div>

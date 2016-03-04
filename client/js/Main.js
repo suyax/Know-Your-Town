@@ -2,7 +2,22 @@
 //Global variables---model
 //Model-initial Model
 var Data = {
-    category: "hotels",
+    categories:{
+      Review:{
+        name:"Review",
+        length:[]
+      }, Popular:{
+        name:"Popular",
+        length:[]
+      }, Distance:{
+        name:"Distance",
+        length:[]
+      }, All:{
+        name:"All",
+        length:[]
+      }
+    },
+    category: {name: "All", items:[]},
     yelp_url: "https://api.yelp.com/v2/search",
     count : 0,
     items: [],
@@ -32,7 +47,7 @@ var parameters = {
     cll: Data.currentAddress.lat + ',' + Data.currentAddress.lng,
     limit: 20,
     sort: "0",
-    category_filter: $('#selectCategory').val() || Data.category
+    category_filter: $('#selectCategory').val() ||Data.category
 };
 
 //Model-update Model
@@ -70,7 +85,7 @@ function fetchData (parameters, url) {
 }
 
 function successCallback(businesses) {
-    items = [];
+    Data.items = [];
     _.each(businesses, function(business) {
         var bizname = business.name;
         var bizurl = business.url;
@@ -84,16 +99,11 @@ function successCallback(businesses) {
             lng: bizlng
         };
         var biztext = business.snippet_text;
-        items.push(new Itemlize(bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext));
+        var biz = business.is_closed;
+        Data.items.push(new Itemlize(bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext. bizopen));
     });
-    initList(items);
+    //initList(Data.items);
 }
-
-fetchData (parameters, Data.yelp_url).done (function (response, status, body) {
-    if (body.status === 200) {
-        successCallback(response.businesses);
-    }}).fail (function () {
-  $('#yelpElm').text('fail to load yelp Resources');});
 
 //controller-initial
 function addMarker (item, index, map) {
@@ -227,7 +237,14 @@ function initMap() {
     deleteMarkers();
 
     //addMarker to map view
-    initMarkers(map); //call iniMarkers to make markers on map
+    fetchData (parameters, Data.yelp_url).done (function (response, status, body) {
+        if (body.status === 200) {
+            successCallback(response.businesses);
+            return;
+        }}).done(function(response){
+            initMarkers(map, Data.items); //call iniMarkers to make markers on map
+        }).fail (function () {
+      $('#yelpElm').text('fail to load yelp Resources');});
   });
   // 20 seconds after the center of the map has changed go back to initial center
   map.addListener('center_changed', function() {
@@ -248,8 +265,9 @@ function initMap() {
   });
 }
 
-function initMarkers(map) {
-  _.each(items, function(item, index) {
+function initMarkers(map, items) {
+  _.each(Data.items, function(item, index) {
+      console.log("initMarker", item, index)
     addMarker(item,  index, map);
   });
 }
@@ -264,8 +282,36 @@ function initList (items) {
   });
 }
 
-var ViewModel = function(keyword) {
-    this.keyword = ko.observable(keyword);
-    //optionValues : ["Hotels", "Food", "Shopping","Buses"],
-    //selectedOptionValue : ko.observable("Hotels"),
-};
+function CategorySelectionViewModel() {
+  this.availableCategories = [
+    {name:Data.categories.Review.name},
+    {name:Data.categories.Popular.name},
+    {name:Data.categories.Distance.name},
+    {name:Data.categories.All.name},
+  ];
+  this.category = ko.observable();
+}
+
+ko.applyBindings(new CategorySelectionViewModel(), $('#select')[0]);
+
+function UpdateCategoryViewModel() {
+  var self = this;
+  self.items = ko.observableArray([]);
+
+  self.ChangeCategory = function() {
+    self.items.removeAll();
+    _.each(category.items, function(item) {
+      slef.items.push({
+        name: item.name,
+        url: item.url,
+        rate: item.rate,
+        review: item.review,
+        img: item.img
+      })
+    })
+  }
+
+}
+
+ko.applyBindings(new UpdateCategoryViewModel(), $('#yelpElem')[0]);
+
