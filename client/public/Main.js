@@ -1,103 +1,100 @@
-var defaultData = {
-    center: {
-        lat: 40.665911,
-        lng: -111.513906,
-        location: "Park+City"
-    },
-    img: "images/Hotel.svg",
-    term: "inn",
-    category: "hotels",
-    yelp_url: "https://api.yelp.com/v2/search"
-};
 //Model
 //Global variables---model
-var items = [];
-var markers = [];
-var currentAddress = {
-    lat: defaultData.center.lat,
-    lng: defaultData.center.lng,
-    location: defaultData.center.location
-};
 //Model-initial Model
-//Model-initial Model yelp
-var $keyword = $('#keyword');
-var $yelpElem = $('#yelpElem');
-var $selectCategory = $('#selectCategory');
+var Data = {
+    category: "hotels",
+    yelp_url: "https://api.yelp.com/v2/search",
+    count: 0,
+    items: [],
+    markers: [],
+    currentAddress: {
+        lat: 40.75,
+        lng: -111.8833,
+        location: "Salt+Lake+City"
+    },
+    icon: "images/Hotel.svg",
+};
+
+//init Google error handling
 var googleMapErrorHandling = function() {
     if (typeof google || typeof google.map) {
         $('#map').text("Failed To Get Google Map Resources :(");
     }
 }();
-var nonce = Math.floor(Math.random() * 1e12).toString();
+
 var parameters = {
     oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
-    oauth_token: "jTINSkrHtlq0Vw8eRrYyK1SFrXmLWUnt",
-    oauth_nonce: nonce,
-    oauth_timestamp: Math.floor(Date.now() / 1000),
+    oauth_token: "omTVpsVs_FzVgxLbGPXqeZVrlB8oDcoS",
     oauth_signature_method: 'HMAC-SHA1',
     oauth_version: '1.0',
     callback: 'cb',
-    location: currentAddress.location,
-    cll: currentAddress.lat + ',' + currentAddress.lng,
-    limit: 10,
-    category_filter: dataValidater($selectCategory.val(), "category")
+    location: Data.currentAddress.location,
+    cll: Data.currentAddress.lat + ',' + Data.currentAddress.lng,
+    limit: 20,
+    sort: "0",
+    category_filter: $('#selectCategory').val() || Data.category
 };
-
-function dataValidater(data, item) {
-    var validData = defaultData[item];
-    if (data !== undefined && data.length > 0) {
-        validData = data;
-    }
-    return validData;
-}
-
-var encodedSignature = oauthSignature.generate('GET', defaultData.yelp_url, parameters,
-    "YOoYY4UHe1D3tEixMbExUtBqptI", "0H8fIAhkGp_z9M09IIfQxmvZoIk");
-
-parameters.oauth_signature = encodedSignature;
 
 //Model-update Model
 
 //controller
-//Item prototype to setup receving data
-function Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll) {
+//Item prototype to setup receiving data
+function Itemlize(bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext) {
     this.name = bizname;
     this.url = bizurl;
     this.rate = bizrate;
     this.img = bizimg;
     this.review = bizreview;
     this.ll = bizll;
+    this.text = biztext;
 }
 //get data from yelp and pass to view
-function fetchData() {
+function fetchData(parameters, url) {
+    var offset = (Data.count * 20).toString();
+    parameters.offset = offset;
+    Data.count++;
+    var nonce = Math.floor(Math.random() * 1e12).toString();
+    parameters.oauth_nonce = nonce;
+    var timestamp = Math.floor(Date.now() / 1000);
+    parameters.oauth_timestamp = timestamp;
+    var encodedSignature = oauthSignature.generate('GET', url, parameters,
+        "YOoYY4UHe1D3tEixMbExUtBqptI", "G2Hd_VDIroxB_PyvV4i4XHoMZNk");
+    parameters.oauth_signature = encodedSignature;
+
     return $.ajax({
-        url: defaultData.yelp_url,
+        url: url,
         data: parameters,
         cache: true,
         dataType: "jsonp",
     });
 }
 
-fetchData().done(function(response, status, body) {
+function successCallback(businesses) {
+    items = [];
+    _.each(businesses, function(business) {
+        var bizname = business.name;
+        var bizurl = business.url;
+        var bizrate = business.rating_img_url;
+        var bizimg = business.image_url;
+        var bizreview = business.review_count;
+        var bizlat = business.location.coordinate.latitude;
+        var bizlng = business.location.coordinate.longitude;
+        var bizll = {
+            lat: bizlat,
+            lng: bizlng
+        };
+        var biztext = business.snippet_text;
+        items.push(new Itemlize(bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext));
+    });
+    initList(items);
+}
+
+fetchData(parameters, Data.yelp_url).done(function(response, status, body) {
     if (body.status === 200) {
-        _.each(response.businesses, function(business) {
-            var bizname = business.name;
-            var bizurl = business.url;
-            var bizrate = business.rating_img_url;
-            var bizimg = business.image_url;
-            var bizreview = business.review_count;
-            var bizlat = business.location.coordinate.latitude;
-            var bizlng = business.location.coordinate.longitude;
-            var bizll = {
-                lat: bizlat,
-                lng: bizlng
-            };
-            items.push(new Item(bizname, bizurl, bizrate, bizimg, bizreview, bizll));
-        });
-        initList(items);
+        successCallback(response.businesses);
     }
 }).fail(function() {
-    $yelpElem.text("Failed To Get Yelp Resources :(");
+    $('#yelpElm').text('fail to load yelp Resources');
 });
 
 //controller-initial
@@ -110,10 +107,11 @@ function addMarker(item, index, map) {
             title: item.name,
         });
 
-        markers.push(marker);
+        Data.markers.push(marker);
 
         marker.info = new google.maps.InfoWindow({
-            content: '<><IMG BORDER="0" ALIGN="Left" SRC="' + item.img + '">'
+            content: '<DIV><H4>' + item.name + '</H4><IMG ID="info-image" BORDER="0" ALIGN="Left" SRC="' + item.img + '"></IMG><DIV ID="info-text">' + item.text + '</DIV></DIV>',
+            maxWidth: 260
         });
 
         google.maps.event.addListener(marker, 'click', (function(marker) {
@@ -130,18 +128,18 @@ function addMarker(item, index, map) {
         })(marker));
     }, index * 50);
 }
+
 // Deletes all markers in the array by removing references to them.
 function deleteMarkers() {
-    markers.forEach(function(marker) {
+    _.each(Data.markers, function(marker) {
         marker.setMap(null);
     });
-    markers = [];
+    Data.markers = [];
 }
-//controller- update
 
 //view
 //initial map view
-function init() {
+function initMap() {
     //styleArray defines Google map style
     var styleArray = [{
         featureType: "all",
@@ -164,9 +162,19 @@ function init() {
         }]
     }];
     var map = new google.maps.Map($('#map')[0], {
-        center: defaultData.center,
+        center: Data.currentAddress,
         zoom: 10,
         styles: styleArray
+    });
+    var markerImage = new google.maps.MarkerImage(Data.icon,
+        new google.maps.Size(71, 71),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(0, 0),
+        new google.maps.Size(35, 35));
+    var marker = new google.maps.Marker({
+        map: map,
+        position: map.getCenter(),
+        icon: markerImage
     });
 
     //Create the search box and link it to the UI element
@@ -174,15 +182,16 @@ function init() {
     var autoComplete = new google.maps.places.Autocomplete(input);
     autoComplete.bindTo('bounds', map);
 
-    var center = new google.maps.Marker({
+    center = new google.maps.Marker({
         map: map,
         anchorPoint: new google.maps.Point(0, -29)
     });
+
     autoComplete.addListener('place_changed', function() {
         center.setVisible(false);
         var place = autoComplete.getPlace();
         if (!place.geometry) {
-            window.alert("find not find this place");
+            window.alert("can not find this place");
             return;
         }
         // If the place has a geometry, the present it on map;
@@ -195,13 +204,13 @@ function init() {
             url: place.icon,
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
+            anchor: new google.maps.Point(0, -29),
             scaledSize: new google.maps.Size(35, 35)
         }));
         center.setPosition(place.geometry.location);
         center.setVisible(true);
 
-        var address = defaultData.location;
+        var address = Data.currentAddress.location;
         if (place.address_components) {
             address = [
                 (place.address_components[0] && place.address_components[0].short_name || ''),
@@ -210,28 +219,30 @@ function init() {
             ].join(' ');
         }
 
-        currentAddress.lat = map.getCenter().lat();
-        currentAddress.lng = map.getCenter().lng();
-        currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
-
+        Data.currentAddress.lat = map.getCenter().lat();
+        Data.currentAddress.lng = map.getCenter().lng();
+        Data.currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
+        parameters.location = Data.currentAddress.location;
+        parameters.cll = Data.currentAddress.lat.toString().slice(0, 6) + ',' + Data.currentAddress.lng.toString().slice(0, 6);
 
         //clear out the old markers.
         deleteMarkers();
+
         //addMarker to map view
         initMarkers(map); //call iniMarkers to make markers on map
     });
-    // 5 seconds after the center of the map has changed go back to initial center
+    // 20 seconds after the center of the map has changed go back to initial center
     map.addListener('center_changed', function() {
         window.setTimeout(function() {
             map.setCenter({
-                lat: currentAddress.lat,
-                lng: currentAddress.lng
+                lat: Data.currentAddress.lat,
+                lng: Data.currentAddress.lng
             });
             map.setZoom(12);
         }, 20000);
     });
 
-    google.maps.event.addDomListener(window, 'load', init);
+    google.maps.event.addDomListener(window, 'load', initMap);
     google.maps.event.addDomListener(window, "resize", function() {
         var center = map.getCenter();
         google.maps.event.trigger(map, "resize");
@@ -247,19 +258,16 @@ function initMarkers(map) {
 
 //initial list view
 function initList(items) {
-    $yelpElem.innerHTML = "";
-    items.forEach(function(item) {
+    _.each(items, function(item) {
         var yelplist = '<a href="' + item.url + '">' + item.name + '    </a><img src="' + item.rate + '"</img><span>    ' + item.review + '</span><br><img src="' + item.img + '"</img>';
         $("<li/>", {
             html: yelplist
-        }).appendTo($yelpElem);
+        }).appendTo($('#yelpElem'));
     });
 }
-//initial navi view
+
 var ViewModel = function(keyword) {
     this.keyword = ko.observable(keyword);
     //optionValues : ["Hotels", "Food", "Shopping","Buses"],
     //selectedOptionValue : ko.observable("Hotels"),
 };
-
-ko.applyBindings(new ViewModel(defaultData.term));

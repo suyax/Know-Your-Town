@@ -78,10 +78,10 @@ body {
 .row > div {
   max-height: 100vh;
   overflow-style: scrollbar;
-  -webkit-transition: width 0.3s ease, margin 0.3s ease;
-  -moz-transition: width 0.3s ease, margin 0.3s ease;
-  -o-transition: width 0.3s ease, margin 0.3s ease;
-  transition: width 0.3s ease, margin 0.3s ease; }
+  -webkit-transition: width 3s ease, margin 3s ease;
+  -moz-transition: width 3s ease, margin 3s ease;
+  -o-transition: width 3s ease, margin 3s ease;
+  transition: width 3s ease, margin 3s ease; }
 
 ul {
   margin: 5px;
@@ -116,3 +116,6 @@ ul > li {
 .dropdown {
   right: 20px;
   position: relative; }
+
+#info-image {
+  padding-right: 5px; }
