@@ -278,7 +278,6 @@ function UpdateYelpViewModel() {
     });
 
     //load initial search and convert it to item instance, the populate  self item
-
     function successCallback(businesses) {
         var mappedBusiness = $.map(businesses, function(business) {
             return new Item(business);
