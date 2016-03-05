@@ -105,9 +105,11 @@ body{
 }
 
 ul {
+    height:100%;
     margin: 5px;
-    padding-left:20px;
+    padding-left:10px;
     background-color: rgba(255, 255, 255, 0.8);
+
 }
 
 #logo {
@@ -116,11 +118,9 @@ ul {
 
 ul > li {
     margin: 30px;
-    background-origin: border-box;
 }
 
 #left {
-    height: 100%;
     -webkit-box-shadow: inset 6 0 12;
     box-shadow: inset 6 0 12;
 }

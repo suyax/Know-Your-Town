@@ -84,19 +84,18 @@ body {
   transition: width 3s ease, margin 3s ease; }
 
 ul {
+  height: 100%;
   margin: 5px;
-  padding-left: 20px;
+  padding-left: 10px;
   background-color: rgba(255, 255, 255, 0.8); }
 
 #logo {
   width: 100px; }
 
 ul > li {
-  margin: 30px;
-  background-origin: border-box; }
+  margin: 30px; }
 
 #left {
-  height: 100%;
   -webkit-box-shadow: inset 6 0 12;
   box-shadow: inset 6 0 12; }
 

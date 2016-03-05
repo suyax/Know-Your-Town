@@ -2,19 +2,7 @@
 //Global variables---model
 //Model-initial Model
 var Data = {
-    categories:{
-      Review:{
-        name:"Review",
-        length:[]
-      }, Popular:{
-        name:"Popular",
-        length:[]
-      }, All:{
-        name:"All",
-        length:[]
-      }
-    },
-    category: {name: "All", items:[]},
+    categories:['All','Highest Review', 'Most Popular'],
     yelp_url: "https://api.yelp.com/v2/search",
     count : 0,
     items: [],
@@ -46,10 +34,7 @@ var parameters = {
     sort: "0"
 };
 
-//Model-update Model
-
 //controller
-
 //controller-initial
 function addMarker (item, index, map) {
   window.setTimeout (function () {
@@ -143,6 +128,7 @@ function initMap() {
   autoComplete.addListener('place_changed', function() {
     center.setVisible(false);
     var place = autoComplete.getPlace();
+    console.log(place);
     if (!place.geometry) {
       window.alert("can not find this place");
       return;
@@ -204,62 +190,53 @@ function initMap() {
 
 function initMarkers(map, items) {
   _.each(Data.items, function(item, index) {
-      console.log("initMarker", item, index)
     addMarker(item,  index, map);
   });
 }
 
-//initial list view
-function initList (items) {
-  _.each(items, function (item) {
-    var yelplist = '<a href="' + item.url + '">' + item.name + '    </a><img src="' + item.rate + '"</img><span>    ' + item.review + '</span><br><img src="' + item.img + '"</img>';
-    $("<li/>", {
-      html: yelplist
-    }).appendTo($('#yelpElem'));
+//Item prototype to setup receiving data
+function Item(business) {
+  this.name = ko.observable(business.name);
+  this.url = ko.observable(business.url);
+  this.rate = ko.observable(business.rating);
+  this.rateImg = ko.observable(business.rating_img_url);
+  this.image = ko.observable(business.image_url);
+  this.review = ko.observable(business.review_count);
+  this.ll = ko.observable({
+    lat:business.location.coordinate.latitude,
+    lng: business.location.coordinate.longitude
   });
+  this.text = ko.observable(business.snippet_text);
 }
-
-function CategorySelectionViewModel() {
-  this.availableCategories = [
-    {name:Data.categories.Review.name},
-    {name:Data.categories.Popular.name},
-    {name:Data.categories.All.name},
-  ];
-  this.category = ko.observable();
-}
-
-ko.applyBindings(new CategorySelectionViewModel(), $('#select')[0]);
-  //Item prototype to setup receiving data
-  function Item(business) {
-    console.log(business.rating_img_url);
-    this.name = ko.observable(business.name);
-    this.url = ko.observable(business.url);
-    this.rate = ko.observable(business.rating);
-    this.rateImg = ko.observable(business.rating_img_url);
-    this.image = ko.observable(business.image_url);
-
-    this.review = ko.observable(business.review_count);
-    this.ll = ko.observable({
-      lat:business.location.coordinate.latitude,
-      lng: business.location.coordinate.longitude
-    });
-    this.text = ko.observable(business.snippet_text);
-  }
 
 function UpdateYelpViewModel() {
   //data
   var self = this;
+  category = Data.categories[0];
+  console.log(Data.categories[0]);
+  availableCategories = Data.categories;
+  self.category = ko.observable(category);
   self.items = ko.observableArray([]);
+  self.select = ko.computed(function() {
+    if (self.category() === Data.categories[1]) {
+      return self.items().sort(function(a, b) {
+        return a.rate() == b.rate()? 0 : (a.rate() > b.rate() ? -1 : 1);}).slice(0, 5);
+    } else if (self.category() === Data.categories[2]) {
+      return self.items().sort(function(a, b) {
+        return a.review() === b.review()? 0 : (a.review() > b.review() ? -1 : 1);}).slice(0, 5);}
+      return self.items().sort(function(a, b) {
+        return a.review() === b.review()? 0 : (a.name() < b.name() ? -1 : 1);});
+  });
   self.currentAddress = ko.observable();
   self.review = ko.computed(function() {
     return ko.utils.arrayFilter(self.items(), function(item) {
-      return item.rate() >= 4;
+      return item.rate() >= 4.5;
     });
   });
 
   self.popular = ko.computed(function() {
     return ko.utils.arrayFilter(self.items(), function(item) {
-      return item.review() >= 100;
+      return item.review() >= 200;
     });
   });
 
@@ -298,11 +275,10 @@ function UpdateYelpViewModel() {
 
   function successCallback(businesses) {
     var mappedBusiness = $.map(businesses, function(business) {
-      return new Item(business)
+      return new Item(business);
     });
     self.items(mappedBusiness);
   }
 }
 
-ko.applyBindings(new UpdateYelpViewModel(), $('#yelpElem')[0]);
-
+ko.applyBindings(new UpdateYelpViewModel());

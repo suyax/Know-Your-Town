@@ -28,8 +28,7 @@
                         <div class=" from-control input-group-btn">
                         <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?">
                         <select id="select" class="form-control" data-bind="options: availableCategories,
-                        optionsCaption: 'Narrow it Down by ...',
-                        optionsText:'name',
+                        optionsText: $data,
                         value: category"></select>
                         </div>
                     </div>
@@ -41,8 +40,9 @@
         <div class="row">
             <div id="map" class="col-xs-12"></div>
             <div class="col-xs-0" id="left">
-                <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo">
-                <ul data-bind="foreach: items" id="yelpElem">
+                <ul id="yelpElem">
+                    <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></li>
+                    <!-- ko foreach: select -->
                     <li>
                         <a data-bind="text: $data.name, attr:{href:$data.url}"></a>
                         <br>
@@ -51,6 +51,7 @@
                         <img data-bind="attr: {src:$data.rateImg}"/>
                         <span data-bind="text: $data.review"/>
                     </li>
+                    <!-- /ko -->
                 </ul>
             </div>
         </div>
