@@ -92,7 +92,8 @@ ul {
   width: 100px; }
 
 ul > li {
-  margin: 5px; }
+  margin: 30px;
+  background-origin: border-box; }
 
 #left {
   height: 100%;

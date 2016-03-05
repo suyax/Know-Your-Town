@@ -41,13 +41,16 @@
         <div class="row">
             <div id="map" class="col-xs-12"></div>
             <div class="col-xs-0" id="left">
-                <ul id="yelpElem">
-                    <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo">
-                    <!-- /ko foreach:items -->
+                <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo">
+                <ul data-bind="foreach: items" id="yelpElem">
                     <li>
-                        <a data-bind="text: name, attr:{'href':url"></a>
+                        <a data-bind="text: $data.name, attr:{href:$data.url}"></a>
+                        <br>
+                        <img data-bind="attr: {src:$data.image}"/>
+                         <br>
+                        <img data-bind="attr: {src:$data.rateImg}"/>
+                        <span data-bind="text: $data.review"/>
                     </li>
-                    <!-- /ko  -->
                 </ul>
             </div>
         </div>

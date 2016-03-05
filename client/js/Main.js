@@ -9,9 +9,6 @@ var Data = {
       }, Popular:{
         name:"Popular",
         length:[]
-      }, Distance:{
-        name:"Distance",
-        length:[]
       }, All:{
         name:"All",
         length:[]
@@ -46,64 +43,12 @@ var parameters = {
     location: Data.currentAddress.location,
     cll: Data.currentAddress.lat + ',' + Data.currentAddress.lng,
     limit: 20,
-    sort: "0",
-    category_filter: $('#selectCategory').val() ||Data.category
+    sort: "0"
 };
 
 //Model-update Model
 
 //controller
-//Item prototype to setup receiving data
-function Itemlize (bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext) {
-  this.name = bizname;
-  this.url = bizurl;
-  this.rate = bizrate;
-  this.img = bizimg;
-  this.review = bizreview;
-  this.ll = bizll;
-  this.text = biztext;
-}
-//get data from yelp and pass to view
-function fetchData (parameters, url) {
-  var offset = (Data.count * 20).toString();
-  parameters.offset = offset;
-  Data.count++;
-  var nonce = Math.floor(Math.random() * 1e12).toString();
-  parameters.oauth_nonce = nonce;
-  var timestamp = Math.floor(Date.now() / 1000);
-  parameters.oauth_timestamp = timestamp;
-  var encodedSignature = oauthSignature.generate('GET', url, parameters,
-      "YOoYY4UHe1D3tEixMbExUtBqptI", "G2Hd_VDIroxB_PyvV4i4XHoMZNk");
-  parameters.oauth_signature = encodedSignature;
-
-  return $.ajax({
-      url: url,
-      data: parameters,
-      cache: true,
-      dataType: "jsonp",
-  });
-}
-
-function successCallback(businesses) {
-    Data.items = [];
-    _.each(businesses, function(business) {
-        var bizname = business.name;
-        var bizurl = business.url;
-        var bizrate = business.rating_img_url;
-        var bizimg = business.image_url;
-        var bizreview = business.review_count;
-        var bizlat = business.location.coordinate.latitude;
-        var bizlng = business.location.coordinate.longitude;
-        var bizll = {
-            lat: bizlat,
-            lng: bizlng
-        };
-        var biztext = business.snippet_text;
-        var biz = business.is_closed;
-        Data.items.push(new Itemlize(bizname, bizurl, bizrate, bizimg, bizreview, bizll, biztext. bizopen));
-    });
-    //initList(Data.items);
-}
 
 //controller-initial
 function addMarker (item, index, map) {
@@ -237,14 +182,6 @@ function initMap() {
     deleteMarkers();
 
     //addMarker to map view
-    fetchData (parameters, Data.yelp_url).done (function (response, status, body) {
-        if (body.status === 200) {
-            successCallback(response.businesses);
-            return;
-        }}).done(function(response){
-            initMarkers(map, Data.items); //call iniMarkers to make markers on map
-        }).fail (function () {
-      $('#yelpElm').text('fail to load yelp Resources');});
   });
   // 20 seconds after the center of the map has changed go back to initial center
   map.addListener('center_changed', function() {
@@ -286,32 +223,86 @@ function CategorySelectionViewModel() {
   this.availableCategories = [
     {name:Data.categories.Review.name},
     {name:Data.categories.Popular.name},
-    {name:Data.categories.Distance.name},
     {name:Data.categories.All.name},
   ];
   this.category = ko.observable();
 }
 
 ko.applyBindings(new CategorySelectionViewModel(), $('#select')[0]);
+  //Item prototype to setup receiving data
+  function Item(business) {
+    console.log(business.rating_img_url);
+    this.name = ko.observable(business.name);
+    this.url = ko.observable(business.url);
+    this.rate = ko.observable(business.rating);
+    this.rateImg = ko.observable(business.rating_img_url);
+    this.image = ko.observable(business.image_url);
 
-function UpdateCategoryViewModel() {
-  var self = this;
-  self.items = ko.observableArray([]);
-
-  self.ChangeCategory = function() {
-    self.items.removeAll();
-    _.each(category.items, function(item) {
-      slef.items.push({
-        name: item.name,
-        url: item.url,
-        rate: item.rate,
-        review: item.review,
-        img: item.img
-      })
-    })
+    this.review = ko.observable(business.review_count);
+    this.ll = ko.observable({
+      lat:business.location.coordinate.latitude,
+      lng: business.location.coordinate.longitude
+    });
+    this.text = ko.observable(business.snippet_text);
   }
 
+function UpdateYelpViewModel() {
+  //data
+  var self = this;
+  self.items = ko.observableArray([]);
+  self.currentAddress = ko.observable();
+  self.review = ko.computed(function() {
+    return ko.utils.arrayFilter(self.items(), function(item) {
+      return item.rate() >= 4;
+    });
+  });
+
+  self.popular = ko.computed(function() {
+    return ko.utils.arrayFilter(self.items(), function(item) {
+      return item.review() >= 100;
+    });
+  });
+
+  //operations
+
+  //get data from yelp and pass to view
+  function fetchData (parameters, url) {
+    var offset = (Data.count * 20).toString();
+    parameters.offset = offset;
+    Data.count++;
+    var nonce = Math.floor(Math.random() * 1e12).toString();
+    parameters.oauth_nonce = nonce;
+    var timestamp = Math.floor(Date.now() / 1000);
+    parameters.oauth_timestamp = timestamp;
+    var encodedSignature = oauthSignature.generate('GET', url, parameters,
+        "YOoYY4UHe1D3tEixMbExUtBqptI", "G2Hd_VDIroxB_PyvV4i4XHoMZNk");
+    parameters.oauth_signature = encodedSignature;
+    return $.ajax({
+        url: url,
+        data: parameters,
+        cache: true,
+        dataType: "jsonp",
+    });
+  }
+
+  fetchData (parameters, Data.yelp_url).done(function (response, status, body) {
+      if (body.status === 200) {
+          successCallback(response.businesses);
+          return;
+      }}).done(function(response){
+          initMarkers(map, Data.items); //call iniMarkers to make markers on map
+      }).fail (function () {
+    $('#yelpElem').text('fail to load yelp Resources');});
+
+  //load initial search and convert it to item instance, the populate  self item
+
+  function successCallback(businesses) {
+    var mappedBusiness = $.map(businesses, function(business) {
+      return new Item(business)
+    });
+    self.items(mappedBusiness);
+  }
 }
 
-ko.applyBindings(new UpdateCategoryViewModel(), $('#yelpElem')[0]);
+ko.applyBindings(new UpdateYelpViewModel(), $('#yelpElem')[0]);
 
