@@ -22,18 +22,6 @@ var googleMapErrorHandling = function() {
     }
 }();
 
-var parameters = {
-    oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
-    oauth_token: "omTVpsVs_FzVgxLbGPXqeZVrlB8oDcoS",
-    oauth_signature_method: 'HMAC-SHA1',
-    oauth_version: '1.0',
-    callback: 'cb',
-    location: Data.currentAddress.location,
-    cll: Data.currentAddress.lat + ',' + Data.currentAddress.lng,
-    limit: 20,
-    sort: "0"
-};
-
 //controller
 //controller-initial
 function addMarker (item, index, map) {
@@ -213,7 +201,6 @@ function UpdateYelpViewModel() {
   //data
   var self = this;
   category = Data.categories[0];
-  console.log(Data.categories[0]);
   availableCategories = Data.categories;
   self.category = ko.observable(category);
   self.items = ko.observableArray([]);
@@ -227,7 +214,7 @@ function UpdateYelpViewModel() {
       return self.items().sort(function(a, b) {
         return a.review() === b.review()? 0 : (a.name() < b.name() ? -1 : 1);});
   });
-  self.currentAddress = ko.observable();
+  self.currentAddress = ko.observable(Data.currentAddress);
   self.review = ko.computed(function() {
     return ko.utils.arrayFilter(self.items(), function(item) {
       return item.rate() >= 4.5;
@@ -243,7 +230,17 @@ function UpdateYelpViewModel() {
   //operations
 
   //get data from yelp and pass to view
-  function fetchData (parameters, url) {
+  function fetchData (currentAddress, url) {
+    var parameters = {
+        oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
+        oauth_token: "omTVpsVs_FzVgxLbGPXqeZVrlB8oDcoS",
+        oauth_signature_method: 'HMAC-SHA1',
+        oauth_version: '1.0',
+        callback: 'cb',
+        location: currentAddress.location,
+        cll: currentAddress.lat + ',' + currentAddress.lng,
+        limit: 20,
+    };
     var offset = (Data.count * 20).toString();
     parameters.offset = offset;
     Data.count++;
@@ -262,7 +259,7 @@ function UpdateYelpViewModel() {
     });
   }
 
-  fetchData (parameters, Data.yelp_url).done(function (response, status, body) {
+  fetchData (self.currentAddress(), Data.yelp_url).done(function (response, status, body) {
       if (body.status === 200) {
           successCallback(response.businesses);
           return;
