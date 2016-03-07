@@ -5,6 +5,7 @@ var Data = {
     categories:['All','Highest Review', 'Most Popular'],
     yelp_url: "https://api.yelp.com/v2/search",
     count : 0,
+    map: undefined,
     items: [],
     markers: [],
     currentAddress : {
@@ -13,6 +14,26 @@ var Data = {
         location: "Salt+Lake+City"
     },
     icon: "images/Hotel.svg",
+    style: [{
+        featureType: "all",
+        stylers: [{
+            saturation: -60
+        }]
+    }, {
+        featureType: "road.arterial",
+        elementType: "geometry",
+        stylers: [{
+            hue: "#00ffee"
+        }, {
+            saturation: 10
+        }]
+    }, {
+        featureType: "poi.business",
+        elementType: "labels",
+        stylers: [{
+            visibility: "off"
+        }]
+    }]
 };
 
 //init Google error handling
@@ -64,33 +85,16 @@ function deleteMarkers () {
 }
 
 //view
-//initial map view
-function initMap() {
-  //styleArray defines Google map style
-  var styleArray = [{
-      featureType: "all",
-      stylers: [{
-          saturation: -60
-      }]
-  }, {
-      featureType: "road.arterial",
-      elementType: "geometry",
-      stylers: [{
-          hue: "#00ffee"
-      }, {
-          saturation: 10
-      }]
-  }, {
-      featureType: "poi.business",
-      elementType: "labels",
-      stylers: [{
-          visibility: "off"
-      }]
-  }];
-  var map = new google.maps.Map($('#map')[0], {
+//initial  view
+function init() {
+  initMap()
+  ko.applyBindings(new UpdateYelpViewModel(map));
+}
+function createMap () {
+  map = new google.maps.Map($('#map')[0], {
     center: Data.currentAddress,
     zoom: 10,
-    styles: styleArray
+    styles: Data.style
   });
   var markerImage = new google.maps.MarkerImage(Data.icon,
     new google.maps.Size(71, 71),
@@ -102,7 +106,10 @@ function initMap() {
     position: map.getCenter(),
     icon: markerImage
   });
-
+}
+//initial map view
+function initMap() {
+  createMap();
   //Create the search box and link it to the UI element
   var input = $('#pac-input')[0];
   var autoComplete = new google.maps.places.Autocomplete(input);
@@ -116,7 +123,6 @@ function initMap() {
   autoComplete.addListener('place_changed', function() {
     center.setVisible(false);
     var place = autoComplete.getPlace();
-    console.log(place);
     if (!place.geometry) {
       window.alert("can not find this place");
       return;
@@ -149,8 +155,6 @@ function initMap() {
     Data.currentAddress.lat = map.getCenter().lat();
     Data.currentAddress.lng = map.getCenter().lng();
     Data.currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
-    parameters.location = Data.currentAddress.location;
-    parameters.cll = Data.currentAddress.lat.toString().slice(0,6) + ',' + Data.currentAddress.lng.toString().slice(0,6);
 
     //clear out the old markers.
     deleteMarkers();
@@ -197,12 +201,12 @@ function Item(business) {
   this.text = ko.observable(business.snippet_text);
 }
 
-function UpdateYelpViewModel() {
+function UpdateYelpViewModel(map) {
   //data
   var self = this;
-  category = Data.categories[0];
+  self.markers = ko.observableArray(Data.markers);
   availableCategories = Data.categories;
-  self.category = ko.observable(category);
+  self.category = ko.observable(Data.categories[0]);
   self.items = ko.observableArray([]);
   self.select = ko.computed(function() {
     if (self.category() === Data.categories[1]) {
@@ -276,5 +280,3 @@ function UpdateYelpViewModel() {
     self.items(mappedBusiness);
   }
 }
-
-ko.applyBindings(new UpdateYelpViewModel());

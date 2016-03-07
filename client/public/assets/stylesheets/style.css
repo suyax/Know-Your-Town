@@ -106,7 +106,8 @@ ul > li {
   right: 0px;
   top: 50px;
   bottom: 0;
-  overflow: hidden; }
+  overflow: hidden;
+  text-align: center; }
 
 .dropdown {
   right: 20px;
