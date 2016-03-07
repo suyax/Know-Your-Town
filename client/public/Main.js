@@ -77,11 +77,11 @@ function addMarker(item, index, map) {
 }
 
 // Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-    _.each(Data.markers, function(marker) {
-        marker.setMap(null);
+function deleteMarkers(places) {
+    console.log(places)
+    _.each(places, function(place) {
+        place.setMap(null);
     });
-    Data.markers = [];
 }
 
 //view
@@ -118,7 +118,7 @@ function initMap() {
 
     center = new google.maps.Marker({
         map: map,
-        anchorPoint: new google.maps.Point(0, -29)
+        anchorPoint: new google.maps.Point(0, 0)
     });
 
     autoComplete.addListener('place_changed', function() {
@@ -138,7 +138,7 @@ function initMap() {
             url: place.icon,
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(0, -29),
+            anchor: new google.maps.Point(0, 0),
             scaledSize: new google.maps.Size(35, 35)
         }));
         center.setPosition(place.geometry.location);
@@ -158,7 +158,7 @@ function initMap() {
         Data.currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
 
         //clear out the old markers.
-        deleteMarkers();
+        //deleteMarkers();
 
         //addMarker to map view
     });
@@ -173,7 +173,6 @@ function initMap() {
         }, 20000);
     });
 
-    google.maps.event.addDomListener(window, 'load', initMap);
     google.maps.event.addDomListener(window, "resize", function() {
         var center = map.getCenter();
         google.maps.event.trigger(map, "resize");
@@ -181,12 +180,12 @@ function initMap() {
     });
 }
 
-function initMarkers(map, items) {
-    _.each(Data.items, function(item, index) {
-        addMarker(item,  index, map);
-    });
-}
 
+/*function initMarkers(map, items) {
+  _.each(items, function(item, index) {
+    addMarker(item,  index, map);
+  });
+}*/
 //Item prototype to setup receiving data
 function Item(business) {
     this.name = ko.observable(business.name);
@@ -205,24 +204,30 @@ function Item(business) {
 function UpdateYelpViewModel(map) {
     //data
     var self = this;
-    self.markers = ko.observableArray(Data.markers);
+    self.googleMap = map;
     availableCategories = Data.categories;
     self.category = ko.observable(Data.categories[0]);
     self.items = ko.observableArray([]);
+    self.markers = ko.observableArray([]);
     self.select = ko.computed(function() {
+        var result;
         if (self.category() === Data.categories[1]) {
-            return self.items().sort(function(a, b) {
+            result = self.items().sort(function(a, b) {
                 return a.rate() == b.rate() ? 0 : (a.rate() > b.rate() ? -1 : 1);
             }).slice(0, 5);
         } else if (self.category() === Data.categories[2]) {
-            return self.items().sort(function(a, b) {
+            result = self.items().sort(function(a, b) {
                 return a.review() === b.review() ? 0 : (a.review() > b.review() ? -1 : 1);
             }).slice(0, 5);
+        } else {
+            result = self.items().sort(function(a, b) {
+                return a.review() === b.review() ? 0 : (a.name() < b.name() ? -1 : 1);
+            });
         }
-        return self.items().sort(function(a, b) {
-            return a.review() === b.review() ? 0 : (a.name() < b.name() ? -1 : 1);
-        });
-    });
+        updateMarker(result);
+        return result;
+    })
+
     self.currentAddress = ko.observable(Data.currentAddress);
     self.review = ko.computed(function() {
         return ko.utils.arrayFilter(self.items(), function(item) {
@@ -237,6 +242,21 @@ function UpdateYelpViewModel(map) {
     });
 
     //operations
+    function updateMarker(places) {
+        deleteMarkers(self.markers());
+        self.markers.removeAll();
+        _.each(places, function(place) {
+            var marker = new google.maps.Marker({
+                position: place.ll(),
+                map: self.googleMap,
+                animation: google.maps.Animation.DROP,
+                title: place.name(),
+            });
+            self.markers.push(marker);
+        });
+        console.log(self.markers())
+
+    }
 
     //get data from yelp and pass to view
     function fetchData(currentAddress, url) {
@@ -273,8 +293,6 @@ function UpdateYelpViewModel(map) {
             successCallback(response.businesses);
             return;
         }
-    }).done(function(response) {
-        initMarkers(map, Data.items); //call iniMarkers to make markers on map
     }).fail(function() {
         $('#yelpElem').text('fail to load yelp Resources');
     });
@@ -285,5 +303,6 @@ function UpdateYelpViewModel(map) {
             return new Item(business);
         });
         self.items(mappedBusiness);
+
     }
 }
