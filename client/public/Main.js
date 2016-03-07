@@ -43,51 +43,10 @@ var googleMapErrorHandling = function() {
     }
 }();
 
-//controller
-//controller-initial
-function addMarker(item, index, map) {
-    window.setTimeout(function() {
-        var marker = new google.maps.Marker({
-            position: item.ll,
-            map: map,
-            animation: google.maps.Animation.DROP,
-            title: item.name,
-        });
-
-        Data.markers.push(marker);
-
-        marker.info = new google.maps.InfoWindow({
-            content: '<DIV><H4>' + item.name + '</H4><IMG ID="info-image" BORDER="0" ALIGN="Left" SRC="' + item.img + '"></IMG><DIV ID="info-text">' + item.text + '</DIV></DIV>',
-            maxWidth: 260
-        });
-
-        google.maps.event.addListener(marker, 'click', (function(marker) {
-            return function toggleBounce() {
-                if (marker.getAnimation() !== null) {
-                    marker.setAnimation(null);
-                } else {
-                    map.setZoom(15);
-                    map.setCenter(marker.getPosition());
-                    marker.setAnimation(google.maps.Animation.BOUNCE);
-                    marker.info.open(map, marker);
-                }
-            };
-        })(marker));
-    }, index * 50);
-}
-
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers(places) {
-    console.log(places)
-    _.each(places, function(place) {
-        place.setMap(null);
-    });
-}
-
 //view
 //initial  view
 function init() {
-    initMap()
+    initMap();
     ko.applyBindings(new UpdateYelpViewModel(map));
 }
 
@@ -157,10 +116,6 @@ function initMap() {
         Data.currentAddress.lng = map.getCenter().lng();
         Data.currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
 
-        //clear out the old markers.
-        //deleteMarkers();
-
-        //addMarker to map view
     });
     // 20 seconds after the center of the map has changed go back to initial center
     map.addListener('center_changed', function() {
@@ -180,13 +135,6 @@ function initMap() {
     });
 }
 
-
-/*function initMarkers(map, items) {
-  _.each(items, function(item, index) {
-    addMarker(item,  index, map);
-  });
-}*/
-//Item prototype to setup receiving data
 function Item(business) {
     this.name = ko.observable(business.name);
     this.url = ko.observable(business.url);
@@ -202,7 +150,7 @@ function Item(business) {
 }
 
 function UpdateYelpViewModel(map) {
-    //data
+    /*data*/
     var self = this;
     self.googleMap = map;
     availableCategories = Data.categories;
@@ -226,7 +174,7 @@ function UpdateYelpViewModel(map) {
         }
         updateMarker(result);
         return result;
-    })
+    });
 
     self.currentAddress = ko.observable(Data.currentAddress);
     self.review = ko.computed(function() {
@@ -241,7 +189,8 @@ function UpdateYelpViewModel(map) {
         });
     });
 
-    //operations
+    /*operations*/
+    //update marker
     function updateMarker(places) {
         deleteMarkers(self.markers());
         self.markers.removeAll();
@@ -252,10 +201,31 @@ function UpdateYelpViewModel(map) {
                 animation: google.maps.Animation.DROP,
                 title: place.name(),
             });
+            marker.info = new google.maps.InfoWindow({
+                content: '<DIV><H4>' + place.name() + '</H4><IMG ID="info-image" BORDER="0" ALIGN="Left" SRC="' + place.image() + '"></IMG><DIV ID="info-text">' + place.text() + '</DIV></DIV>',
+                maxWidth: 260
+            });
+            google.maps.event.addListener(marker, 'click', (function(marker) {
+                return function toggleBounce() {
+                    if (marker.getAnimation() !== null) {
+                        marker.setAnimation(null);
+                    } else {
+                        map.setZoom(15);
+                        map.setCenter(marker.getPosition());
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                        marker.info.open(map, marker);
+                    }
+                };
+            })(marker));
             self.markers.push(marker);
         });
-        console.log(self.markers())
+    }
 
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers(places) {
+        _.each(places, function(place) {
+            place.setMap(null);
+        });
     }
 
     //get data from yelp and pass to view
@@ -288,6 +258,14 @@ function UpdateYelpViewModel(map) {
         });
     }
 
+    //load initial search and convert it to item instance, the populate  self item
+    function successCallback(businesses) {
+        var mappedBusiness = $.map(businesses, function(business) {
+            return new Item(business);
+        });
+        self.items(mappedBusiness);
+    }
+
     fetchData(self.currentAddress(), Data.yelp_url).done(function(response, status, body) {
         if (body.status === 200) {
             successCallback(response.businesses);
@@ -296,13 +274,4 @@ function UpdateYelpViewModel(map) {
     }).fail(function() {
         $('#yelpElem').text('fail to load yelp Resources');
     });
-
-    //load initial search and convert it to item instance, the populate  self item
-    function successCallback(businesses) {
-        var mappedBusiness = $.map(businesses, function(business) {
-            return new Item(business);
-        });
-        self.items(mappedBusiness);
-
-    }
 }
