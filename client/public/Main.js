@@ -53,7 +53,7 @@ function init() {
 function createMap() {
     map = new google.maps.Map($('#map')[0], {
         center: Data.currentAddress,
-        zoom: 10,
+        zoom: 13,
         styles: Data.style
     });
     var markerImage = new google.maps.MarkerImage(Data.icon,
