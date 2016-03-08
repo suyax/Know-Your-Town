@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <title>Know the Town</title>
     <link rel="icon" href="public/assets/images/index.ico">
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="public/assets/stylesheets/style.css" rel="stylesheet">
+    <link href="public/assets/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" >
+    <link href="public/assets/stylesheets/style.css" rel="stylesheet" type="text/css"  >
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -22,7 +22,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form">
-            <button id="trig" class="btn btn-inverse"><span class="glyphicon glyphicon-search"></span>  On Yelp </button>
+            <button id="trig" class="btn btn-inverse"></span> On Yelp </button>
                 <div class="form-group">
                     <div class="input-group">
                         <div class=" from-control input-group-btn">
@@ -41,7 +41,7 @@
             <div id="map" class="col-xs-12"></div>
             <div class="col-xs-0" id="left">
                 <ul id="yelpElem">
-                    <img  id="logo" src="/public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></li>
+                    <img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></li>
                     <!-- ko foreach: select -->
                     <li>
                         <a data-bind="text: $data.name, attr:{href:$data.url}"></a>
@@ -57,12 +57,12 @@
         </div>
     </div>
     <!-- end template -->
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/underscore/underscore-min.js"></script>
-    <script src="/node_modules/knockout/build/output/knockout-latest.js"></script>
+    <script src="public/libraries/jquery.min.js"></script>
+    <script src="public/libraries/underscore-min.js"></script>
+    <script src="public/libraries/knockout-latest.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <script src="public/libraries/bootstrap.min.js"></script>
+    <script src="public/libraries/oauth-signature.min.js"></script>
     <script src="js/style.js"></script>
     <script src="js/Main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places&callback=init" ></script>
