@@ -9,9 +9,9 @@ var Data = {
     items: [],
     markers: [],
     currentAddress : {
-        lat: 40.75,
-        lng:  -111.8833,
-        location: "Salt+Lake+City"
+        lat: 37.5592899,
+        lng: -122.26525659999999,
+        location: "Foster City Blvd, Foster City, CA 94404, USA "
     },
     icon: "images/Hotel.svg",
     style: [{
@@ -49,84 +49,26 @@ function init() {
   initMap();
   ko.applyBindings(new UpdateYelpViewModel(map));
 }
-function createMap () {
 
+function createMap () {
   map = new google.maps.Map($('#map')[0], {
     center: Data.currentAddress,
-    zoom: 13,
+    zoom: 12,
     styles: Data.style
-  });
-  var markerImage = new google.maps.MarkerImage(Data.icon,
-    new google.maps.Size(71, 71),
-    new google.maps.Point(0, 0),
-    new google.maps.Point(0, 0),
-    new google.maps.Size(35, 35));
-  var marker = new google.maps.Marker({
-    map:map,
-    position: map.getCenter(),
-    icon: markerImage
   });
 }
 //initial map view
 function initMap() {
-  googleMapErrorHandling()
+  googleMapErrorHandling();
   createMap();
   //Create the search box and link it to the UI element
-  var input = $('#pac-input')[0];
+  /*var input = $('#pac-input')[0];
   var autoComplete = new google.maps.places.Autocomplete(input);
   autoComplete.bindTo('bounds', map);
-
+*/
   center = new google.maps.Marker({
     map: map,
     anchorPoint: new google.maps.Point(0, 0)
-  });
-
-  autoComplete.addListener('place_changed', function() {
-    center.setVisible(false);
-    var place = autoComplete.getPlace();
-    if (!place.geometry) {
-      window.alert("can not find this place");
-      return;
-    }
-    // If the place has a geometry, the present it on map;
-    if (place.geometry.viewport) {
-       map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-    }
-    center.setIcon(({
-      url: place.icon,
-      size: new google.maps.Size(71, 71),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(0, 0),
-      scaledSize: new google.maps.Size(35, 35)
-    }));
-    center.setPosition(place.geometry.location);
-    center.setVisible(true);
-
-    var address = Data.currentAddress.location;
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
-
-    Data.currentAddress.lat = map.getCenter().lat();
-    Data.currentAddress.lng = map.getCenter().lng();
-    Data.currentAddress.location = place.address_components[0].short_name.split(' ').join('+');
-
-  });
-  // 20 seconds after the center of the map has changed go back to initial center
-  map.addListener('center_changed', function() {
-    window.setTimeout(function() {
-      map.setCenter({
-        lat: Data.currentAddress.lat,
-        lng: Data.currentAddress.lng
-      });
-      map.setZoom(12);
-    }, 20000);
   });
 
   google.maps.event.addDomListener(window, "resize", function() {
@@ -151,8 +93,24 @@ function Item(business) {
 }
 
 function UpdateYelpViewModel(map) {
+  // 20 seconds after the center of the map has changed go back to initial center
+  map.addListener('center_changed', function() {
+    window.setTimeout(function() {
+      map.setCenter({
+        lat: self.Lat(),
+        lng: self.Lon(),
+      });
+      map.setZoom(12);
+    }, 20000);
+  });
   /*data*/
   var self = this;
+  self.FullAddress = ko.observable(Data.currentAddress.location);
+  self.Street = ko.observable('s');
+  self.Suburb = ko.observable('c');
+  self.State = ko.observable('r');
+  self.Lat = ko.observable(Data.currentAddress.lat);
+  self.Lon = ko.observable(Data.currentAddress.lng);
   self.googleMap = map;
   availableCategories = Data.categories;
   self.category = ko.observable(Data.categories[0]);
@@ -188,6 +146,68 @@ function UpdateYelpViewModel(map) {
   });
 
   /*operations*/
+  ko.bindingHandlers.addressAutocomplete = {
+      init: function (element, valueAccessor, allBindingsAccessor) {
+          var value = valueAccessor(), allBindings = allBindingsAccessor();
+
+          var options = { types: ['geocode'] };
+          ko.utils.extend(options, allBindings.autocompleteOptions);
+
+          var autocomplete = new google.maps.places.Autocomplete(element, options);
+          autocomplete.bindTo('bounds', map);
+
+          google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            self.FullAddress('');
+            self.Lat('');
+            self.Lon('');
+              result = autocomplete.getPlace();
+              value(result.formatted_address);
+              if (!result.geometry) {
+                window.alert("can not find this place");
+                return;
+              }
+              // If the place has a geometry, the present it on map;
+              if (result.geometry.viewport) {
+                 map.fitBounds(result.geometry.viewport);
+              } else {
+                map.setCenter(result.geometry.location);
+              }
+              center.setIcon(({
+                url: result.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(0, 0),
+                scaledSize: new google.maps.Size(35, 35)
+              }));
+              center.setPosition(result.geometry.location);
+              center.setVisible(true);
+              if (result.geometry) {
+                  allBindings.lat(result.geometry.location.lat());
+                  allBindings.lon(result.geometry.location.lng());
+              }
+
+              // The following section poplutes any bindings that match an address component with a first type that is the same name
+              // administrative_area_level_1, posatl_code etc. these can be found in the Google Places API documentation
+              var components = _(result.address_components).groupBy(function (c) { return c.types[0]; });
+              _.each(_.keys(components), function (key) {
+                  if (allBindings.hasOwnProperty(key))
+                      allBindings[key](components[key][0].short_name);
+              });
+          });
+      },
+      update: function (element, valueAccessor, allBindingsAccessor) {
+        if (self.FullAddress() && self.Lat() && self.Lon()) {
+          fetchData (self.FullAddress(), Data.yelp_url).done(function (response, status, body) {
+              if (body.status === 200) {
+                  successCallback(response.businesses);
+                  return;
+              }}).fail (function () {
+            $('#yelpElem').text('fail to load yelp Resources');});
+            ko.bindingHandlers.value.update(element, valueAccessor);
+        }
+      }
+  };
+
   //update marker
   function updateMarker (places){
     deleteMarkers(self.markers());
@@ -234,8 +254,7 @@ function UpdateYelpViewModel(map) {
         oauth_signature_method: 'HMAC-SHA1',
         oauth_version: '1.0',
         callback: 'cb',
-        location: currentAddress.location,
-        cll: currentAddress.lat + ',' + currentAddress.lng,
+        location: currentAddress,
         limit: 20,
     };
     var offset = (Data.count * 20).toString();
@@ -262,12 +281,6 @@ function UpdateYelpViewModel(map) {
       return new Item(business);
     });
     self.items(mappedBusiness);
-  }
 
-  fetchData (self.currentAddress(), Data.yelp_url).done(function (response, status, body) {
-      if (body.status === 200) {
-          successCallback(response.businesses);
-          return;
-      }}).fail (function () {
-    $('#yelpElem').text('fail to load yelp Resources');});
+  }
 }

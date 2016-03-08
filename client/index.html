@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class=" from-control input-group-btn">
-                        <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?">
+                        <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
                         <select id="select" class="form-control" data-bind="options: availableCategories,
                         optionsText: $data,
                         value: category"></select>
