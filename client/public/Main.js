@@ -38,10 +38,10 @@ var Data = {
 
 //init Google error handling
 var googleMapErrorHandling = function() {
-    if (typeof google || typeof google.map) {
+    if (typeof google !== 'object' || typeof google.map !== 'object') {
         $('#map').text("Failed To Get Google Map Resources :(");
     }
-}();
+};
 
 //view
 //initial  view
@@ -51,6 +51,7 @@ function init() {
 }
 
 function createMap() {
+
     map = new google.maps.Map($('#map')[0], {
         center: Data.currentAddress,
         zoom: 13,
@@ -69,6 +70,7 @@ function createMap() {
 }
 //initial map view
 function initMap() {
+    googleMapErrorHandling()
     createMap();
     //Create the search box and link it to the UI element
     var input = $('#pac-input')[0];
