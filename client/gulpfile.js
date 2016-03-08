@@ -5,7 +5,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
-var beautify = require('gulp-jsbeautify');
+var beautify = require('gulp-beautify');
 var sass = require('gulp-sass');
 
 //define default task
@@ -20,7 +20,7 @@ gulp.task('jshint', function() {
 
 gulp.task('beautify', function() {
   gulp.src('js/*.js')
-    .pipe(beautify({indentSize: 2}))
+    .pipe(beautify({indent_size: 2}))
     .pipe(gulp.dest('./public/'))
 });
 
