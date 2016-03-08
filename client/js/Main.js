@@ -40,7 +40,6 @@ var Data = {
   }]
 };
 
-
 //initial function passed as callback, when Google API finished loading in HTML
 // this function will be trigger
 function init() {
@@ -116,6 +115,16 @@ function ViewModel(map) {
     updateMarker(result);
     return result;
   });
+  self.openInfo = function(place) {
+       _.each(self.markers(), function(marker) {
+        if (place.name() === marker.getTitle()) {
+          map.setZoom(Data.zoom.small);
+          map.setCenter(marker.getPosition());
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+          marker.info.open(map, marker);
+        }
+      })
+     }
 
   // 20 seconds after the center of the map has changed go back to initial center
   map.addListener('center_changed', function() {
@@ -221,7 +230,7 @@ function ViewModel(map) {
         };
       })(marker));
       self.markers.push(marker);
-    });
+      });
   }
 
   // Deletes all markers in the array by removing references to them.

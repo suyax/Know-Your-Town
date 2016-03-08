@@ -111,15 +111,16 @@ ul {
     @media (max-width: 767px) {
         margin-top: 150px;
     }
-
 }
 
 #logo {
-    width: 100px;
+    width: 110px;
 }
 
 ul > li {
     margin: 30px;
+    display: block;
+    margin-left: 40px;
 }
 
 #left {
@@ -151,5 +152,7 @@ ul > li {
 }
 
 .yelp-thumbnail {
-    width: 110px
+    width: 110px;
+    border-radius: 20px;
+
 }

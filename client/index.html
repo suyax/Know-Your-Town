@@ -39,12 +39,13 @@
             <div id="map" class="col-xs-12"></div>
             <div class="col-xs-0" id="left">
                 <ul id="yelpElem">
-                    <img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></li>
                     <!-- ko foreach: select -->
                     <li>
-                        <a data-bind="text: $data.name, attr:{href:$data.url}"></a>
+                        <a data-bind="click: $parent.openInfo, text: $data.name"></a>
                         <br>
                         <img class="yelp-thumbnail" data-bind="attr: {src:$data.image}"/>
+                        <br>
+                        <a data-bind="attr:{href:$data.url}"><img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></a>
                          <br>
                         <img data-bind="attr: {src:$data.rateImg}"/>
                         <span data-bind="text: $data.review"/>
