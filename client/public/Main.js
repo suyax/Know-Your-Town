@@ -1,11 +1,11 @@
-//Model
-//Global variables---model
-//Model-initial Model
+/*Main logic: contains init logic for loading google map and yelp api, also
+handles input update that triggers list and map view update */
+
+//Data: defines default data object for initial loading
 var Data = {
   categories: ['All', 'Highest Review', 'Most Popular'],
   yelp_url: "https://api.yelp.com/v2/search",
   count: 0,
-  map: undefined,
   items: [],
   markers: [],
   currentAddress: {
@@ -14,10 +14,14 @@ var Data = {
     location: "Foster City Blvd, Foster City, CA 94404, USA "
   },
   icon: "images/Hotel.svg",
-  style: [{
+  zoom: {
+    small: 15,
+    large: 12,
+  },
+  mapStyle: [{
     featureType: "all",
     stylers: [{
-      saturation: -60
+      saturation: -80
     }]
   }, {
     featureType: "road.arterial",
@@ -25,7 +29,7 @@ var Data = {
     stylers: [{
       hue: "#00ffee"
     }, {
-      saturation: 10
+      saturation: 60
     }]
   }, {
     featureType: "poi.business",
@@ -36,27 +40,17 @@ var Data = {
   }]
 };
 
-//init Google error handling
-var googleMapErrorHandling = function() {
-  if (typeof google !== 'object' || typeof google.map !== 'object') {
-    $('#map').text("Failed To Get Google Map Resources :(");
-  }
-};
 
-//initial  view
+//initial function passed as callback, when Google API finished loading in HTML
+// this function will be trigger
 function init() {
   initMap();
-  ko.applyBindings(new UpdateYelpViewModel(map));
+  ko.applyBindings(new ViewModel(map));
 }
 
-function createMap() {
-  map = new google.maps.Map($('#map')[0], {
-    center: Data.currentAddress,
-    zoom: 12,
-    styles: Data.style
-  });
-}
-//initial map
+//initials google map on page load called by init function: handles Google API
+//cannot be load correctly error, creates map and enables map to resize
+//according to window size change
 function initMap() {
   googleMapErrorHandling();
   createMap();
@@ -72,31 +66,25 @@ function initMap() {
   });
 }
 
-function Item(business) {
-  this.name = ko.observable(business.name);
-  this.url = ko.observable(business.url);
-  this.rate = ko.observable(business.rating);
-  this.rateImg = ko.observable(business.rating_img_url);
-  this.image = ko.observable(business.image_url);
-  this.review = ko.observable(business.review_count);
-  this.ll = ko.observable({
-    lat: business.location.coordinate.latitude,
-    lng: business.location.coordinate.longitude
+//Google map API error handling: called by initMap function
+var googleMapErrorHandling = function() {
+  if (typeof google !== 'object' || typeof google.map !== 'object') {
+    $('#map').text("Failed To Get Google Map Resources :(");
+  }
+};
+
+//creactMap function: called by initMap function, creates google map with
+//default info
+function createMap() {
+  map = new google.maps.Map($('#map')[0], {
+    center: Data.currentAddress,
+    zoom: Data.zoom.large,
+    styles: Data.mapStyle
   });
-  this.text = ko.observable(business.snippet_text);
 }
 
-function UpdateYelpViewModel(map) {
-  // 20 seconds after the center of the map has changed go back to initial center
-  map.addListener('center_changed', function() {
-    window.setTimeout(function() {
-      map.setCenter({
-        lat: self.Lat(),
-        lng: self.Lon(),
-      });
-      map.setZoom(12);
-    }, 20000);
-  });
+// ViewModel: include ko.bind logic, pass in map as param,
+function ViewModel(map) {
   /*data*/
   var self = this;
   self.FullAddress = ko.observable(Data.currentAddress.location);
@@ -108,8 +96,8 @@ function UpdateYelpViewModel(map) {
   self.googleMap = map;
   availableCategories = Data.categories;
   self.category = ko.observable(Data.categories[0]);
-  self.items = ko.observableArray([]);
-  self.markers = ko.observableArray([]);
+  self.items = ko.observableArray(Data.items);
+  self.markers = ko.observableArray(Data.markers);
   self.select = ko.computed(function() {
     var result;
     if (self.category() === Data.categories[1]) {
@@ -129,25 +117,23 @@ function UpdateYelpViewModel(map) {
     return result;
   });
 
-  self.currentAddress = ko.observable(Data.currentAddress);
-  self.review = ko.computed(function() {
-    return ko.utils.arrayFilter(self.items(), function(item) {
-      return item.rate() >= 4.5;
-    });
-  });
-
-  self.popular = ko.computed(function() {
-    return ko.utils.arrayFilter(self.items(), function(item) {
-      return item.review() >= 200;
-    });
+  // 20 seconds after the center of the map has changed go back to initial center
+  map.addListener('center_changed', function() {
+    window.setTimeout(function() {
+      map.setCenter({
+        lat: self.Lat(),
+        lng: self.Lon(),
+      });
+      map.setZoom(Data.zoom.large);
+    }, 20000);
   });
 
   /*operations*/
+  //ko custom biding for address auto complete
   ko.bindingHandlers.addressAutocomplete = {
     init: function(element, valueAccessor, allBindingsAccessor) {
       var value = valueAccessor(),
         allBindings = allBindingsAccessor();
-
       var options = {
         types: ['geocode']
       };
@@ -157,9 +143,7 @@ function UpdateYelpViewModel(map) {
       autocomplete.bindTo('bounds', map);
 
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        self.FullAddress('');
-        self.Lat('');
-        self.Lon('');
+        deleteAddress();
         result = autocomplete.getPlace();
         value(result.formatted_address);
         if (!result.geometry) {
@@ -176,7 +160,7 @@ function UpdateYelpViewModel(map) {
           url: result.icon,
           size: new google.maps.Size(71, 71),
           origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, -39),
           scaledSize: new google.maps.Size(35, 35)
         }));
         center.setPosition(result.geometry.location);
@@ -186,8 +170,7 @@ function UpdateYelpViewModel(map) {
           allBindings.lon(result.geometry.location.lng());
         }
 
-        // The following section poplutes any bindings that match an address component with a first type that is the same name
-        // administrative_area_level_1, posatl_code etc. these can be found in the Google Places API documentation
+        // administrative_area_level_1, posatl_code etc. Reference Google Places API documentation
         var components = _(result.address_components).groupBy(function(c) {
           return c.types[0];
         });
@@ -212,10 +195,9 @@ function UpdateYelpViewModel(map) {
     }
   };
 
-  //update marker
+  //update marker: called by self.select compute, delete old markers and add new
   function updateMarker(places) {
     deleteMarkers(self.markers());
-    self.markers.removeAll();
     _.each(places, function(place) {
       var marker = new google.maps.Marker({
         position: place.ll(),
@@ -232,7 +214,7 @@ function UpdateYelpViewModel(map) {
           if (marker.getAnimation() !== null) {
             marker.setAnimation(null);
           } else {
-            map.setZoom(15);
+            map.setZoom(Data.zoom.small);
             map.setCenter(marker.getPosition());
             marker.setAnimation(google.maps.Animation.BOUNCE);
             marker.info.open(map, marker);
@@ -248,9 +230,17 @@ function UpdateYelpViewModel(map) {
     _.each(places, function(place) {
       place.setMap(null);
     });
+    self.markers.removeAll();
   }
 
-  //get data from yelp and pass to view
+  function deleteAddress() {
+    self.FullAddress('');
+    self.Lat('');
+    self.Lon('');
+  }
+
+  //fetch data function: get data from yelp and pass to viewModel on success,
+  //take params: currentAddress, url
   function fetchData(currentAddress, url) {
     var parameters = {
       oauth_consumer_key: "7rqoAa2v6JN6e-OxrS6fHQ",
@@ -279,12 +269,26 @@ function UpdateYelpViewModel(map) {
     });
   }
 
-  //load initial search and convert it to item instance, the populate  self item
+  //successCallback function: load json data and convert it to item instance, then populate self item
   function successCallback(businesses) {
     var mappedBusiness = $.map(businesses, function(business) {
       return new Item(business);
     });
     self.items(mappedBusiness);
+  }
 
+  //Item class, take in data and make it organized
+  function Item(business) {
+    this.name = ko.observable(business.name);
+    this.url = ko.observable(business.url);
+    this.rate = ko.observable(business.rating);
+    this.rateImg = ko.observable(business.rating_img_url);
+    this.image = ko.observable(business.image_url);
+    this.review = ko.observable(business.review_count);
+    this.ll = ko.observable({
+      lat: business.location.coordinate.latitude,
+      lng: business.location.coordinate.longitude
+    });
+    this.text = ko.observable(business.snippet_text);
   }
 }

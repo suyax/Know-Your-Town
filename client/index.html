@@ -22,14 +22,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form">
-            <button id="trig" class="btn btn-inverse"></span> On Yelp </button>
+            <button id="trig" class="btn btn-inverse">List View </button>
                 <div class="form-group">
                     <div class="input-group">
                         <div class=" from-control input-group-btn">
-                        <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
-                        <select id="select" class="form-control" data-bind="options: availableCategories,
-                        optionsText: $data,
-                        value: category"></select>
+                            <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
+                            <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
                         </div>
                     </div>
                 </div>
@@ -46,7 +44,7 @@
                     <li>
                         <a data-bind="text: $data.name, attr:{href:$data.url}"></a>
                         <br>
-                        <img class="yelp-thumbnail"data-bind="attr: {src:$data.image}"/>
+                        <img class="yelp-thumbnail" data-bind="attr: {src:$data.image}"/>
                          <br>
                         <img data-bind="attr: {src:$data.rateImg}"/>
                         <span data-bind="text: $data.review"/>
@@ -60,7 +58,6 @@
     <script src="public/libraries/jquery.min.js"></script>
     <script src="public/libraries/underscore-min.js"></script>
     <script src="public/libraries/knockout-latest.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="public/libraries/bootstrap.min.js"></script>
     <script src="public/libraries/oauth-signature.min.js"></script>
     <script src="js/style.js"></script>
