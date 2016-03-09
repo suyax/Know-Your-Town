@@ -22,13 +22,11 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form">
-            <button id="trig" class="btn btn-inverse">List View </button>
                 <div class="form-group">
-                    <div class="input-group">
                         <div class=" from-control input-group-btn">
+                            <button id="switch-view" class="btn btn-inverse">List View </button>
                             <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
                             <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
-                        </div>
                     </div>
                 </div>
             </form>
