@@ -123,8 +123,8 @@ function ViewModel(map) {
           marker.setAnimation(google.maps.Animation.BOUNCE);
           marker.info.open(map, marker);
         }
-      })
-     }
+      });
+     };
 
   // 20 seconds after the center of the map has changed go back to initial center
   map.addListener('center_changed', function() {
@@ -133,7 +133,6 @@ function ViewModel(map) {
         lat: self.Lat(),
         lng: self.Lon(),
       });
-      map.setZoom(Data.zoom.large);
     }, 20000);
   });
 
@@ -206,6 +205,7 @@ function ViewModel(map) {
   //update marker: called by self.select compute, delete old markers and add new
   function updateMarker(places) {
     deleteMarkers(self.markers());
+    var bounds = new google.maps.LatLngBounds();
     _.each(places, function(place) {
       var marker = new google.maps.Marker({
         position: place.ll(),
@@ -230,7 +230,9 @@ function ViewModel(map) {
         };
       })(marker));
       self.markers.push(marker);
+      bounds.extend(marker.getPosition());
       });
+    self.googleMap.fitBounds(bounds);
   }
 
   // Deletes all markers in the array by removing references to them.
