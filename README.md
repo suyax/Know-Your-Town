@@ -1,6 +1,13 @@
 ## Synopsis
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+__ A Vacation Destination Research Tool __
+  > experience the neighborhood like a local.
+
+__ Visualize the neighborhood you plan to stay  __
+  > Pin point the place you will stay and search interesting local businesses and activities around it.
+
+__ Gain the insider review  __
+  > list view showing yelp review and rating gives you a a list of venues for selection.
 
 ## Code Example
 

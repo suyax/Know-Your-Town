@@ -47,8 +47,10 @@
                         <br>
                         <a data-bind="attr:{href:$data.url}"><img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></a>
                          <br>
-                        <img data-bind="attr: {src:$data.rateImg}"/>
-                        <span data-bind="text: $data.review"/>
+                        <div id="yelp-rate">
+                            <img data-bind="attr: {src:$data.rateImg}"/>
+                            <span data-bind="text: $data.review"/>
+                        </div>
                     </li>
                     <!-- /ko -->
                 </ul>

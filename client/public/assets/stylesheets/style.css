@@ -84,9 +84,12 @@ body {
   transition: width 3s ease, margin 3s ease; }
 
 ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 100%;
+  padding: 0px;
   margin: 5px;
-  padding-left: 10px;
   background-color: rgba(255, 255, 255, 0.8);
   margin-top: 10px; }
   @media (max-width: 767px) {
@@ -97,9 +100,9 @@ ul {
   width: 110px; }
 
 ul > li {
-  margin: 30px;
-  display: block;
-  margin-left: 40px; }
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
 
 #left {
   -webkit-box-shadow: inset 6 0 12;
