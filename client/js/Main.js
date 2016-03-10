@@ -118,9 +118,7 @@ function ViewModel(map) {
       }
     }
       updateMarker(result);
-      console.log(result);
-    if (result.length === 0) {
-      console.log({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())})
+    if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
         map.setZoom(Data.zoom.small);
     }
@@ -264,6 +262,7 @@ function ViewModel(map) {
       callback: 'cb',
       location: currentAddress,
       limit: 20,
+      offset: parseInt(Data.count* 20)
     };
     var offset = (Data.count * 20).toString();
     parameters.offset = offset;
