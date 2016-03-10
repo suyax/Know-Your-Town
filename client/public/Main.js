@@ -116,6 +116,8 @@ function ViewModel(map) {
     return result;
   });
   self.openInfo = function(place) {
+    $('#map').toggleClass('col-xs-12 col-xs-0');
+    $('#left').toggleClass('col-xs-0 col-xs-12');
     _.each(self.markers(), function(marker) {
       if (place.name() === marker.getTitle()) {
         map.setZoom(Data.zoom.small);
@@ -125,16 +127,6 @@ function ViewModel(map) {
       }
     });
   };
-
-  // 20 seconds after the center of the map has changed go back to initial center
-  map.addListener('center_changed', function() {
-    window.setTimeout(function() {
-      map.setCenter({
-        lat: self.Lat(),
-        lng: self.Lon(),
-      });
-    }, 20000);
-  });
 
   /*operations*/
   //ko custom biding for address auto complete
@@ -196,7 +188,7 @@ function ViewModel(map) {
             return;
           }
         }).fail(function() {
-          $('#yelpElem').text('fail to load yelp Resources');
+          $('#yelp-list').text('fail to load yelp Resources');
         });
         ko.bindingHandlers.value.update(element, valueAccessor);
       }
@@ -228,6 +220,7 @@ function ViewModel(map) {
             marker.setAnimation(google.maps.Animation.BOUNCE);
             marker.info.open(map, marker);
           }
+          $("#navbar").attr("aria-expanded", "false").removeClass("in");
         };
       })(marker));
       self.markers.push(marker);
