@@ -47,7 +47,7 @@ function init() {
   ko.applyBindings(new ViewModel(map));
 }
 
-//initials google map on page load called by init function: handles Google API
+//initials Google map on page load called by init function: handles Google API
 //cannot be load correctly error, creates map and enables map to resize
 //according to window size change
 function initMap() {
