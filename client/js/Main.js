@@ -86,6 +86,7 @@ function createMap() {
 function ViewModel(map) {
   /*data*/
   var self = this;
+  self.inputName = ko.observable('');
   self.FullAddress = ko.observable(Data.currentAddress.location);
   self.Street = ko.observable('s');
   self.Suburb = ko.observable('c');
@@ -108,12 +109,22 @@ function ViewModel(map) {
         return a.review() === b.review() ? 0 : (a.review() > b.review() ? -1 : 1);
       }).slice(0, 5);
     } else {
-      result = self.items().sort(function(a, b) {
-        return a.review() === b.review() ? 0 : (a.name() < b.name() ? -1 : 1);
-      });
+      if(self.inputName().length === 0) {
+        result = self.items();
+      } else {
+        result = _.filter(self.items(), function(item) {
+          return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase())+1;
+        })
+      }
     }
-    updateMarker(result);
-    return result;
+      updateMarker(result);
+      console.log(result);
+    if (result.length === 0) {
+      console.log({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())})
+        map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
+        map.setZoom(Data.zoom.small);
+    }
+      return result;
   });
   self.openInfo = function(place) {
     $('#map').toggleClass('col-xs-12 col-xs-0');

@@ -18,7 +18,7 @@ gulp.task('default', ['watch','build-css','bundle-js']);
 
 // configure jshint task
 gulp.task('jshint', function() {
-  return gulp.src('js/*.js')
+  return gulp.src('./js/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
@@ -34,18 +34,15 @@ gulp.task('build-css', function() {
 });
 
 gulp.task('bundle-js', function(){
-  return gulp.src('js/*.js')
+  return gulp.src('./js/*.js')
   .pipe(beautify({indent_size: 2}))
-  .pipe(uglify())
   .pipe(concat('bundle.js'))
   .pipe(gulp.dest('./public/'))
-
-
 })
 
 //configure which file to watch and what task to use
 gulp.task('watch', function() {
-  gulp.watch('js/*.js', ['jshint','bundle-js']);
-  gulp.watch('sass/*.scss',['build-css']);
+  gulp.watch('./js/*.js', ['jshint','bundle-js']);
+  gulp.watch('./stylesheets/sass/*.scss',['build-css']);
 });
 

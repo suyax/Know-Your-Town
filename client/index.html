@@ -7,6 +7,7 @@
     <title>Know the Town</title>
     <link rel="icon" href="public/assets/images/index.ico">
     <link href="public/assets/bundle.css" rel="stylesheet" type="text/css"  >
+    <script src="public/libraries/knockout-latest.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -24,7 +25,10 @@
                 <div class="form-group">
                         <div class=" from-control input-group-btn">
                             <button id="switch-view" class="btn btn-inverse">List View </button>
-                            <input id="pac-input" class=" form-control control" type="text" placeholder="Where are you going?" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
+                            <input id="pac-input" class=" form-control control" type="text" placeholder="Destination" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
+                            <label class="btn">Filter By</label>
+                            <input id="name-input" class=" form-control control" type="text" placeholder="Business name" data-bind="textInput: inputName">
+                            <label  class="btn">OR</label>
                             <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
                     </div>
                 </div>
@@ -57,7 +61,6 @@
     <!-- end template -->
     <script src="public/libraries/jquery.min.js"></script>
     <script src="public/libraries/underscore-min.js"></script>
-    <script src="public/libraries/knockout-latest.js"></script>
     <script src="public/libraries/bootstrap.min.js"></script>
     <script src="public/libraries/oauth-signature.min.js"></script>
     <script src="public/bundle.js"></script>

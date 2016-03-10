@@ -11,6 +11,17 @@ body{
     $primaryColor:#ccc;
 }
 
+label.btn{
+    background-color:#222;
+    border:1;
+    color:#9d9d9d;
+    padding-left: 12px;
+    @media (max-width: 767px) {
+        padding-left: 0px;
+    }
+
+}
+
 .navbar-custom .icon-bar {
     background-color:#fff;
 }
@@ -51,6 +62,14 @@ body{
     font-weight: 300;
     padding: 0 11px 0 13px;
     text-overflow: ellipsis;
+}
+
+#name-input {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    padding: 0 11px 0 13px;
 }
 
 #pac-input:focus {
@@ -110,7 +129,7 @@ ul {
     padding: 0px;
     margin: 5px;
     background-color: rgba(255, 255, 255, 0.8);
-    margin-top: 10px;
+    margin-top: 50px;
 }
 
 #logo {
@@ -159,4 +178,6 @@ ul > li {
 #switch-view {
     border: 1px solid transparent;
     border-radius: 4px;
+    margin-right: 50px;
 }
+
