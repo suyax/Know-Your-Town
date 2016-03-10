@@ -30,14 +30,15 @@ __Node__
   * go to localhost: 8000
 
 ## Getting Started
-1. Enter your destination location in the input field that says "where are you going" at the center of Navigation bar
-  * when typing auto completion feature provides a list of potential locations under the input filed, click the location fit your need
-  * 20 recommended location will show up in the list view and map view
-2. Toggle List view button at the right of navigation bar will make the list view show up or hidden
+1. Enter your destination location in the input field that says "Destination" at the center of Navigation bar
+  * when typing, auto completion feature provides a list of potential locations under the input filed, click the location fit your need
+  * 20 recommended locations will show up in the list view and map view
+2. Toggle List view button at left of navigation bar will make the list view show up or hidden
   * on mobile device the view will switched between list and map view
-3. Select from drop down menu at the right of navigation will help you narrow down your search
+3. Type letter that contained by place name will filter both list and marker in real time
+4. Select from drop down menu at the right of navigation will help you narrow down your search
   * both list view and map view will reflect based on it
-4. Click on place name or marker will show the information of this place on map
+5. Click on place name or marker will show the information of this place on map
   * click on close sign of the info window will close the info window
   * click on the marker will stop bounce animation for the marker
 

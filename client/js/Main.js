@@ -99,7 +99,7 @@ function ViewModel(map) {
   self.items = ko.observableArray(Data.items);
   self.markers = ko.observableArray(Data.markers);
   self.select = ko.computed(function() {
-    var result;
+    var result = self.items();
     if (self.category() === Data.categories[1]) {
       result = self.items().sort(function(a, b) {
         return a.rate() == b.rate() ? 0 : (a.rate() > b.rate() ? -1 : 1);
@@ -109,16 +109,14 @@ function ViewModel(map) {
         return a.review() === b.review() ? 0 : (a.review() > b.review() ? -1 : 1);
       }).slice(0, 5);
     } else {
-      if(self.inputName().length === 0) {
-        result = self.items();
-      } else {
-        result = _.filter(self.items(), function(item) {
+      result = self.items();
+    }
+    if (self.inputName().length > 0) {
+        result = _.filter(result, function(item) {
           return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase())+1;
         })
-      }
-    }
       updateMarker(result);
-    if (self.markers().length === 0) {
+      if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
         map.setZoom(Data.zoom.small);
     }
