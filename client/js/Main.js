@@ -41,6 +41,7 @@ var Data = {
 };
 
 //initial function passed as callback, when Google API finished loading in HTML
+var timeoutID = window.setTimeout(function(){$('#map').text("Failed To Get Google Map Resources :(").css("margin", "200px")}, 2000);
 // this function will be trigger
 function init() {
   initMap();
@@ -51,6 +52,7 @@ function init() {
 //cannot be load correctly error, creates map and enables map to resize
 //according to window size change
 function initMap() {
+  window.clearTimeout(timeoutID);
   googleMapErrorHandling();
   createMap();
   center = new google.maps.Marker({
@@ -66,11 +68,12 @@ function initMap() {
 }
 
 //Google map API error handling: called by initMap function
-var googleMapErrorHandling = function() {
+function googleMapErrorHandling () {
   if (typeof google !== 'object' || typeof google.map !== 'object') {
     $('#map').text("Failed To Get Google Map Resources :(");
-  }
+}
 };
+
 
 //creactMap function: called by initMap function, creates google map with
 //default info
@@ -108,20 +111,19 @@ function ViewModel(map) {
       result = self.items().sort(function(a, b) {
         return a.review() === b.review() ? 0 : (a.review() > b.review() ? -1 : 1);
       }).slice(0, 5);
-    } else {
-      result = self.items();
-    }
-    if (self.inputName().length > 0) {
+    } else if (self.inputName().length > 0) {
         result = _.filter(result, function(item) {
           return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase())+1;
         })
-      updateMarker(result);
       if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
         map.setZoom(Data.zoom.small);
+      }
     }
+      updateMarker(result);
       return result;
   });
+
   self.openInfo = function(place) {
     $('#map').toggleClass('col-xs-12 col-xs-0');
     $('#left').toggleClass('col-xs-0 col-xs-12');
@@ -133,7 +135,7 @@ function ViewModel(map) {
           marker.info.open(map, marker);
         }
       });
-     };
+  };
 
   /*operations*/
   //ko custom biding for address auto complete
@@ -194,7 +196,7 @@ function ViewModel(map) {
             return;
           }
         }).fail(function() {
-          $('#yelp-list').text('fail to load yelp Resources');
+          $('#yelp-list').text('fail to load yelp Resources').css("width", "200px")
         });
         ko.bindingHandlers.value.update(element, valueAccessor);
       }

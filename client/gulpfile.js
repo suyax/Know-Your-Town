@@ -36,8 +36,8 @@ gulp.task('build-css', function() {
 gulp.task('bundle-js', function(){
   return gulp.src('./js/*.js')
   .pipe(beautify({indent_size: 2}))
-  .pipe(concat('bundle.js'))
-  .pipe(rename('all.min.js'))
+  .pipe(concat('all.min.js'))
+  .pipe(rename('bundle.js'))
   .pipe(uglify())
   .pipe(gulp.dest('./public/'))
 })
