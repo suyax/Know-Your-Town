@@ -41,7 +41,10 @@
                 <ul id="yelp-list">
                     <!-- ko foreach: select -->
                     <li>
-                        <a class="yelp-name" data-bind="click: $parent.openInfo, text: $data.name"></a>
+                        <div>
+                            <span class="yelp-index" data-bind="text: $data.index" ></span>
+                            <a class="yelp-name" data-bind="click: $parent.openInfo, text: $data.name"></a>
+                        </div>
                         <br>
                         <img class="yelp-thumbnail" data-bind="attr: {src:$data.image}"/>
                         <br>

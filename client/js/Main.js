@@ -4,16 +4,25 @@ handles input update that triggers list and map view update */
 //Data: defines default data object for initial loading
 var Data = {
   categories: ['All', 'Highest Review', 'Most Popular'],
-  yelp_url: "https://api.dyelp.com/v2/search",
+  yelp_url: "https://api.yelp.com/v2/search",
   count: 0,
   items: [],
+  index: 0,
   markers: [],
   currentAddress: {
     lat: 37.5592899,
     lng: -122.26525659999999,
     location: "Foster City Blvd, Foster City, CA 94404, USA "
   },
-  icon: "images/Hotel.svg",
+  //iconBase: "http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.8|0|9d9d9d|15|b|",
+  iconBase: "http://chart.apis.google.com/chart?chst=d_map_pin_letter_withshadow&chld=",
+  icons: {
+    default: this.iconBase + 'default.svg',
+    food:  this.iconBase + 'Food.svg',
+    grocery:  this.iconBase + 'Grocery.svg',
+    hotel:  this.iconBase + 'Hotel.svg',
+    sport:  this.iconBase + 'Ski.svg',
+  },
   zoom: {
     small: 15,
     large: 12,
@@ -110,7 +119,7 @@ function ViewModel(map) {
       }).slice(0, 5);
     } else if (self.inputName().length > 0) {
         result = _.filter(result, function(item) {
-          return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase())+1;
+          return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase().split(' ').join(''))+1;
         });
       if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
@@ -210,6 +219,7 @@ function ViewModel(map) {
         map: self.googleMap,
         animation: google.maps.Animation.DROP,
         title: place.name(),
+        icon: Data.iconBase + place.index() +'|000000|FFFFFF'
       });
       marker.info = new google.maps.InfoWindow({
         content: '<DIV><H4>' + place.name() + '</H4><IMG ID="info-image" BORDER="0" ALIGN="Left" SRC="' + place.image() + '"></IMG><DIV ID="info-text">' + place.text() + '</DIV></DIV>',
@@ -281,6 +291,7 @@ function ViewModel(map) {
 
   //successCallback function: load json data and convert it to item instance, then populate self item
   function successCallback(businesses) {
+    Data.index = 0;
     var mappedBusiness = $.map(businesses, function(business) {
       return new Item(business);
     });
@@ -300,5 +311,6 @@ function ViewModel(map) {
       lng: business.location.coordinate.longitude
     });
     this.text = ko.observable(business.snippet_text);
+    this.index = ko.observable(Data.index++);
   }
 }
