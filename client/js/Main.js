@@ -41,7 +41,7 @@ var Data = {
 };
 
 //initial function passed as callback, when Google API finished loading in HTML
-var timeoutID = window.setTimeout(function(){$('#map').text("Failed To Get Google Map Resources :(").css("margin", "200px")}, 2000);
+  googleMapErrorHandling();
 // this function will be trigger
 function init() {
   initMap();
@@ -52,8 +52,6 @@ function init() {
 //cannot be load correctly error, creates map and enables map to resize
 //according to window size change
 function initMap() {
-  window.clearTimeout(timeoutID);
-  googleMapErrorHandling();
   createMap();
   center = new google.maps.Marker({
     map: map,

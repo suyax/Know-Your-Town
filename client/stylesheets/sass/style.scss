@@ -19,7 +19,6 @@ label.btn{
     @media (max-width: 767px) {
         padding-left: 0px;
     }
-
 }
 
 .navbar-custom .icon-bar {
@@ -143,8 +142,12 @@ ul > li {
 }
 
 #left {
+    width: 33.3%;
+    @media (max-width: 767px) {
+        width: 100%;
     -webkit-box-shadow: inset 6 0 12;
     box-shadow: inset 6 0 12;
+    }
 }
 
 #map {
@@ -165,9 +168,6 @@ ul > li {
 
 #info-image {
     padding-right: 5px;
-}
-
-#info-text {
 }
 
 .yelp-thumbnail {

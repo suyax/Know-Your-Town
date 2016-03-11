@@ -22,13 +22,13 @@
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form">
                 <div class="form-group">
-                        <div class=" from-control input-group-btn">
-                            <button id="switch-view" class="btn btn-inverse">List View </button>
-                            <input id="pac-input" class=" form-control control" type="text" placeholder="Destination" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
-                            <label class="btn">Filter By</label>
-                            <input id="name-input" class=" form-control control" type="text" placeholder="Business name" data-bind="textInput: inputName">
-                            <label  class="btn">OR</label>
-                            <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
+                    <div class=" from-control input-group-btn">
+                        <button id="switch-view" class="btn btn-inverse">List View </button>
+                        <input id="pac-input" class=" form-control control" type="text" placeholder="Destination" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
+                        <label class="btn">Filter By</label>
+                        <input id="name-input" class=" form-control control" type="text" placeholder="Business name" data-bind="textInput: inputName">
+                        <label  class="btn">OR</label>
+                        <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
                     </div>
                 </div>
             </form>
@@ -36,8 +36,8 @@
     </nav>
     <div class="container-fluid" id="main">
         <div class="row">
-            <div id="map" class="col-xs-12"></div>
-            <div class="col-xs-0" id="left">
+            <div id="map" ></div>
+            <div class="col-xs-4" id="left">
                 <ul id="yelp-list">
                     <!-- ko foreach: select -->
                     <li>
