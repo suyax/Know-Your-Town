@@ -4,7 +4,7 @@ handles input update that triggers list and map view update */
 //Data: defines default data object for initial loading
 var Data = {
   categories: ['All', 'Highest Review', 'Most Popular'],
-  yelp_url: "https://api.yelp.com/v2/search",
+  yelp_url: "https://api.dyelp.com/v2/search",
   count: 0,
   items: [],
   markers: [],
@@ -69,9 +69,8 @@ function initMap() {
 function googleMapErrorHandling () {
   if (typeof google !== 'object' || typeof google.map !== 'object') {
     $('#map').text("Failed To Get Google Map Resources :(");
+  }
 }
-};
-
 
 //creactMap function: called by initMap function, creates google map with
 //default info
@@ -112,7 +111,7 @@ function ViewModel(map) {
     } else if (self.inputName().length > 0) {
         result = _.filter(result, function(item) {
           return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase())+1;
-        })
+        });
       if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
         map.setZoom(Data.zoom.small);
@@ -194,7 +193,7 @@ function ViewModel(map) {
             return;
           }
         }).fail(function() {
-          $('#yelp-list').text('fail to load yelp Resources').css("width", "200px")
+          $('#yelp-list').text('fail to load yelp Resources');
         });
         ko.bindingHandlers.value.update(element, valueAccessor);
       }
