@@ -6,7 +6,7 @@ html body{
 }
 
 body{
-    padding-top:50px; /*padding for navbar*/
+    padding-top:50px;
     padding-bottom: 20px;
     $primaryColor:#ccc;
 }
@@ -123,12 +123,11 @@ label.btn {
 ul {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     height:100%;
-    padding: 0px;
-    margin: 5px;
     background-color: rgba(255, 255, 255, 0.8);
     margin-top: 50px;
+    padding: 0px;
 }
 
 #logo {
@@ -136,9 +135,10 @@ ul {
 }
 
 ul > li {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin-left: 50px;
 }
 
 #left {
@@ -173,18 +173,25 @@ ul > li {
 .yelp-thumbnail {
     width: 110px;
     border-radius: 20px;
+    margin: 5px;
+}
+
+.yelp-title {
+    display: flex;
+    align-items: baseline;
+    margin: 5px;
+
 }
 
 .yelp-index {
+    margin-right: 10px;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    text-align: left;
-
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    background: #000;
+    color: #FFF;
+    text-align: center;
 }
 
 #switch-view {

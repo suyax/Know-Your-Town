@@ -9,10 +9,14 @@ if (mq.matches) {
   });
 } else {
   $('#switch-view').on('click', function(event) {
+    console.log($('#switch-view').text())
     event.preventDefault();
     $("#navbar").attr("aria-expanded","false").toggleClass("in");
-    $('#left').toggleClass('col-xs-4 col-xs-0');
-    $('#switch-view').text() !== "Map View" ? $('#switch-view').text('Map View'): $('#switch-view').text('List View');
+    if ($('#switch-view').text() === "List View"){
+      $('#switch-view').text('Map View');
+      $('#left').toggleClass('col-xs-0 col-xs-4');
+    } else {
+      $('#switch-view').text('List View'); $('#left').toggleClass('col-xs-4 col-xs-0')
+    }
   });
-
 }

@@ -7,7 +7,7 @@ var Data = {
   yelp_url: "https://api.yelp.com/v2/search",
   count: 0,
   items: [],
-  index: 0,
+  index: 1,
   markers: [],
   currentAddress: {
     lat: 37.5592899,
@@ -95,7 +95,8 @@ function createMap() {
 function ViewModel(map) {
   /*data*/
   var self = this;
-  self.inputName = ko.observable('');
+  self.toggleView = ko.observable('Map View');
+  self.inputNumber = ko.observable('');
   self.FullAddress = ko.observable(Data.currentAddress.location);
   self.Street = ko.observable('s');
   self.Suburb = ko.observable('c');
@@ -117,22 +118,23 @@ function ViewModel(map) {
       result = self.items().sort(function(a, b) {
         return a.review() === b.review() ? 0 : (a.review() > b.review() ? -1 : 1);
       }).slice(0, 5);
-    } else if (self.inputName().length > 0) {
+    } else if (self.inputNumber().length > 0 && self.inputNumber()>=0 && self.inputNumber()<=20) {
         result = _.filter(result, function(item) {
-          return item.name().split(' ').join('').toLowerCase().search(self.inputName().toLowerCase().split(' ').join(''))+1;
+          return item.index().toString().search(self.inputNumber())+1;
         });
+    }
       if (self.markers().length === 0) {
         map.setCenter({lat: parseFloat(self.Lat()), lng: parseFloat(self.Lon())});
         map.setZoom(Data.zoom.small);
       }
-    }
       updateMarker(result);
       return result;
   });
 
-  self.openInfo = function(place) {
-    $('#map').toggleClass('col-xs-12 col-xs-0');
-    $('#left').toggleClass('col-xs-0 col-xs-12');
+  openInfo = function(place) {
+    self.toggleView('Map View');
+     $('#left').toggleClass('col-xs-4 col-xs-0');
+      self.toggleView('List View');
        _.each(self.markers(), function(marker) {
         if (place.name() === marker.getTitle()) {
           map.setZoom(Data.zoom.small);
@@ -291,7 +293,7 @@ function ViewModel(map) {
 
   //successCallback function: load json data and convert it to item instance, then populate self item
   function successCallback(businesses) {
-    Data.index = 0;
+    Data.index = 1;
     var mappedBusiness = $.map(businesses, function(business) {
       return new Item(business);
     });

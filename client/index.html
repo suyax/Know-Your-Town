@@ -23,12 +23,12 @@
             <form class="navbar-form">
                 <div class="form-group">
                     <div class=" from-control input-group-btn">
-                        <button id="switch-view" class="btn btn-inverse">List View </button>
+                        <button id="switch-view" class="btn btn-inverse" data-bind=" text: toggleView"> </button>
                         <input id="pac-input" class=" form-control control" type="text" placeholder="Destination" data-bind="addressAutocomplete: FullAddress, route: Street, locality: Suburb, administrative_area_level_1: State, lat: Lat, lon: Lon" >
                         <label class="btn">Filter By</label>
-                        <input id="name-input" class=" form-control control" type="text" placeholder="Business name" data-bind="textInput: inputName">
-                        <label  class="btn">OR</label>
                         <select id="select" class="form-control" data-bind="options: availableCategories, optionsText: $data, value: category"></select>
+                        <label  class="btn">OR</label>
+                        <input id="name-input" class=" form-control control" type="text" placeholder="Place Number 1-20" data-bind="textInput: inputNumber">
                     </div>
                 </div>
             </form>
@@ -41,13 +41,13 @@
                 <ul id="yelp-list">
                     <!-- ko foreach: select -->
                     <li>
-                        <div>
-                            <span class="yelp-index" data-bind="text: $data.index" ></span>
-                            <a class="yelp-name" data-bind="click: $parent.openInfo, text: $data.name"></a>
+                        <div class="yelp-title" data-bind="click: openInfo">
+                            <div class="yelp-index">
+                                <span data-bind="text: $data.index" ></span>
+                            </div>
+                            <a class="yelp-name" data-bind="text: $data.name"></a>
                         </div>
-                        <br>
                         <img class="yelp-thumbnail" data-bind="attr: {src:$data.image}"/>
-                        <br>
                         <a data-bind="attr:{href:$data.url}"><img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></a>
                          <br>
                         <div id="yelp-rate">
