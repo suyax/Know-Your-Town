@@ -5,8 +5,8 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <title>Know the Town</title>
-    <link rel="icon" href="public/assets/images/index.ico">
-    <link href="public/assets/bundle.css" rel="stylesheet" type="text/css"  >
+    <link rel="icon" href="assets/images/index.ico">
+    <link href="assets/bundle.css" rel="stylesheet" type="text/css"  >
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -48,7 +48,7 @@
                             <a class="yelp-name" data-bind="text: $data.name"></a>
                         </div>
                         <img class="yelp-thumbnail" data-bind="attr: {src:$data.image}"/>
-                        <a data-bind="attr:{href:$data.url}"><img  id="logo" src="public/assets/images/Yelp_Logo.svg.png" alt="yelp logo"></a>
+                        <a data-bind="attr:{href:$data.url}"><img  id="logo" src="assets/images/Yelp_Logo.svg.png" alt="yelp logo"></a>
                          <br>
                         <div id="yelp-rate">
                             <img data-bind="attr: {src:$data.rateImg}"/>
@@ -62,8 +62,8 @@
     </div>
     <!-- end template -->
     <script src="libraries/jquery.min.js"></script>
-    <script src="public/libraries.js"></script>
-    <script src="public/bundle.js"></script>
+    <script src="libraries.js"></script>
+    <script src="bundle.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv29-6fRPf118Uy6ETE2IMIJPfvEW34RM&libraries=places&callback=init" ></script>
   </body>
 </html>

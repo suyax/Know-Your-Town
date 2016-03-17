@@ -1,6 +1,10 @@
 {
   "name": "know-the-neighborhood",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "engines": {
+    "node": "^5.4.1",
+    "npm": "^3.5.3"
+  },
   "description": "a travel planner for exploring new neighborhood",
   "main": "main.js",
   "dependencies": {
@@ -27,7 +31,7 @@
     "gulp-cssmin": "^0.1.7"
   },
   "scripts": {
-    "default": "gulp"
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
@@ -42,5 +46,4 @@
   "bugs": {
     "url": "https://github.com/suyax/Project-5/issues"
   },
-  "homepage": "https://github.com/suyax/Project-5#readme"
 }
