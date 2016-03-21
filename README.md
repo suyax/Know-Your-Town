@@ -1,4 +1,4 @@
-## Know The Town
+## Know Your Town
 
 
 __A Vacation Destination Research Tool__
@@ -15,7 +15,7 @@ __Gain the insider review__
 
 __Planing a trip and find yourself switch from google map and yelp for comparison and lose track of what you really what?__
 
-Know the Town help you consolidate location, distance, reviews in one place.
+Know Your Town help you consolidate location, distance, reviews in one place.
 
 
 ## Installation
