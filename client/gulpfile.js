@@ -14,7 +14,7 @@ var rename = require('gulp-rename');
 var addsrc = require('gulp-add-src');
 
 //define default task
-gulp.task('default', ['watch','build-css','bundle-js']);
+gulp.task('default', ['watch','build-css','bundle-js', 'compress']);
 
 // configure jshint task
 gulp.task('jshint', function() {
@@ -30,16 +30,20 @@ gulp.task('build-css', function() {
     .pipe(rename({suffix: '.min'}))
     .pipe(addsrc('./stylesheets/bootstrap.min.css'))
     .pipe(concat('bundle.css'))
-    .pipe(gulp.dest('./public/assets/'))
+    .pipe(gulp.dest('../public/assets/'))
 });
 
 gulp.task('bundle-js', function(){
   return gulp.src('./js/*.js')
   .pipe(beautify({indent_size: 2}))
   .pipe(concat('all.min.js'))
-  .pipe(rename('bundle.js'))
-  //.pipe(uglify())
-  .pipe(gulp.dest('./public/'))
+  .pipe(gulp.dest('../public/'))
+})
+
+gulp.task('compress', function() {
+  return gulp.src('../public/bundle.js')
+  .pipe(uglify())
+  .pipe(gulp.dest('../public/'))
 })
 
 //configure which file to watch and what task to use
