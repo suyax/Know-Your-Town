@@ -1,4 +1,4 @@
-## Know The Town
+## Know Your Town
 
 
 __A Vacation Destination Research Tool__
